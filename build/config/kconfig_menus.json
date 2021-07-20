@@ -80,31 +80,21 @@
         "type": "bool"
     },
     {
-        "children": [
-            {
-                "children": [],
-                "depends_on": "<choice IDF_TARGET_ESP32S3_BETA_VERSION>",
-                "help": null,
-                "id": "IDF_TARGET_ESP32S3_BETA_VERSION_3",
-                "name": "IDF_TARGET_ESP32S3_BETA_VERSION_3",
-                "range": null,
-                "title": "ESP32-S3 beta3",
-                "type": "bool"
-            }
-        ],
-        "depends_on": "IDF_TARGET_ESP32S3",
-        "help": "Currently ESP32-S3 has several beta versions for internal use only.\nSelect the one that matches your chip model.",
-        "id": "esp32-s3-beta-version",
-        "name": "IDF_TARGET_ESP32S3_BETA_VERSION",
-        "title": "ESP32-S3 beta version",
-        "type": "choice"
-    },
-    {
         "children": [],
         "depends_on": null,
         "help": null,
         "id": "IDF_TARGET_ESP32C3",
         "name": "IDF_TARGET_ESP32C3",
+        "range": null,
+        "title": null,
+        "type": "bool"
+    },
+    {
+        "children": [],
+        "depends_on": null,
+        "help": null,
+        "id": "IDF_TARGET_LINUX",
+        "name": "IDF_TARGET_LINUX",
         "range": null,
         "title": null,
         "type": "bool"
@@ -193,7 +183,7 @@
                     }
                 ],
                 "depends_on": null,
-                "help": "Select the way the application is built.\n\nBy default, the application is built as a binary file in a format compatible with\nthe ESP-IDF bootloader. In addition to this application, 2nd stage bootloader is\nalso built. Application and bootloader binaries can be written into flash and\nloaded/executed from there.\n\nAnother option, useful for only very small and limited applications, is to only link\nthe .elf file of the application, such that it can be loaded directly into RAM over\nJTAG. Note that since IRAM and DRAM sizes are very limited, it is not possible to\nbuild any complex application this way. However for kinds of testing and debugging,\nthis option may provide faster iterations, since the application does not need to be\nwritten into flash.\nNote that at the moment, ESP-IDF does not contain all the startup code required to\ninitialize the CPUs and ROM memory (data/bss). Therefore it is necessary to execute\na bit of ROM code prior to executing the application. A gdbinit file may look as follows (for ESP32):\n\n    # Connect to a running instance of OpenOCD\n    target remote :3333\n    # Reset and halt the target\n    mon reset halt\n    # Run to a specific point in ROM code,\n    #  where most of initialization is complete.\n    thb *0x40007901\n    c\n    # Load the application into RAM\n    load\n    # Run till app_main\n    tb app_main\n    c\n\nExecute this gdbinit file as follows:\n\n    xtensa-esp32-elf-gdb build/app-name.elf -x gdbinit\n\nExample gdbinit files for other targets can be found in tools/test_apps/system/gdb_loadable_elf/\n\nRecommended sdkconfig.defaults for building loadable ELF files is as follows.\nCONFIG_APP_BUILD_TYPE_ELF_RAM is required, other options help reduce application\nmemory footprint.\n\n    CONFIG_APP_BUILD_TYPE_ELF_RAM=y\n    CONFIG_VFS_SUPPORT_TERMIOS=\n    CONFIG_NEWLIB_NANO_FORMAT=y\n    CONFIG_ESP_SYSTEM_PANIC_PRINT_HALT=y\n    CONFIG_ESP_DEBUG_STUBS_ENABLE=\n    CONFIG_ESP_ERR_TO_NAME_LOOKUP=",
+                "help": "Select the way the application is built.\n\nBy default, the application is built as a binary file in a format compatible with\nthe ESP-IDF bootloader. In addition to this application, 2nd stage bootloader is\nalso built. Application and bootloader binaries can be written into flash and\nloaded/executed from there.\n\nAnother option, useful for only very small and limited applications, is to only link\nthe .elf file of the application, such that it can be loaded directly into RAM over\nJTAG. Note that since IRAM and DRAM sizes are very limited, it is not possible to\nbuild any complex application this way. However for kinds of testing and debugging,\nthis option may provide faster iterations, since the application does not need to be\nwritten into flash.\nNote that at the moment, ESP-IDF does not contain all the startup code required to\ninitialize the CPUs and ROM memory (data/bss). Therefore it is necessary to execute\na bit of ROM code prior to executing the application. A gdbinit file may look as follows (for ESP32):\n\n    # Connect to a running instance of OpenOCD\n    target remote :3333\n    # Reset and halt the target\n    mon reset halt\n    # Run to a specific point in ROM code,\n    #  where most of initialization is complete.\n    thb *0x40007d54\n    c\n    # Load the application into RAM\n    load\n    # Run till app_main\n    tb app_main\n    c\n\nExecute this gdbinit file as follows:\n\n    xtensa-esp32-elf-gdb build/app-name.elf -x gdbinit\n\nExample gdbinit files for other targets can be found in tools/test_apps/system/gdb_loadable_elf/\n\nRecommended sdkconfig.defaults for building loadable ELF files is as follows.\nCONFIG_APP_BUILD_TYPE_ELF_RAM is required, other options help reduce application\nmemory footprint.\n\n    CONFIG_APP_BUILD_TYPE_ELF_RAM=y\n    CONFIG_VFS_SUPPORT_TERMIOS=\n    CONFIG_NEWLIB_NANO_FORMAT=y\n    CONFIG_ESP_SYSTEM_PANIC_PRINT_HALT=y\n    CONFIG_ESP_DEBUG_STUBS_ENABLE=\n    CONFIG_ESP_ERR_TO_NAME_LOOKUP=",
                 "id": "build-type-application-build-type",
                 "name": "APP_BUILD_TYPE",
                 "title": "Application build type",
@@ -632,7 +622,7 @@
                             {
                                 "children": [],
                                 "depends_on": "BOOTLOADER_APP_ANTI_ROLLBACK",
-                                "help": "This option allow emulate read/write operations with efuse secure version.\nIt allow to test anti-rollback implemention without permanent write eFuse bits.\nIn partition table should be exist this partition `emul_efuse, data, 5, , 0x2000`.",
+                                "help": "This option allows to emulate read/write operations with all eFuses and efuse secure version.\nIt allows to test anti-rollback implemention without permanent write eFuse bits.\nThere should be an entry in partition table with following details: `emul_efuse, data, efuse, , 0x2000`.\n\nThis option enables: EFUSE_VIRTUAL and EFUSE_VIRTUAL_KEEP_IN_FLASH.",
                                 "id": "BOOTLOADER_EFUSE_SECURE_VERSION_EMULATE",
                                 "name": "BOOTLOADER_EFUSE_SECURE_VERSION_EMULATE",
                                 "range": null,
@@ -1003,7 +993,7 @@
                                 "type": "bool"
                             }
                         ],
-                        "depends_on": "IDF_TARGET_ESP32S2 && SECURE_FLASH_ENC_ENABLED",
+                        "depends_on": "(IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3) && SECURE_FLASH_ENC_ENABLED",
                         "help": "Size of generated AES-XTS key.\n\nAES-128 uses a 256-bit key (32 bytes) which occupies one Efuse key block.\nAES-256 uses a 512-bit key (64 bytes) which occupies two Efuse key blocks.\n\nThis setting is ignored if either type of key is already burned to Efuse before the first boot.\nIn this case, the pre-burned key is used and no new key is generated.",
                         "id": "security-features-enable-flash-encryption-on-boot-read-docs-first--size-of-generated-aes-xts-key",
                         "name": "SECURE_FLASH_ENCRYPTION_KEYSIZE",
@@ -1776,7 +1766,7 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is the default partition table, designed to fit into a 2MB or\nlarger flash with a single 1MB app partition.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp.csv\n\nThis partition table is not suitable for an app that needs OTA\n(over the air update) capability.",
                         "id": "PARTITION_TABLE_SINGLE_APP",
                         "name": "PARTITION_TABLE_SINGLE_APP",
                         "range": null,
@@ -1786,7 +1776,17 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is a variation of the default partition table, that expands\nthe 1MB app partition size to 1.5MB to fit more code.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp_large.csv\n\nThis partition table is not suitable for an app that needs OTA\n(over the air update) capability.",
+                        "id": "PARTITION_TABLE_SINGLE_APP_LARGE",
+                        "name": "PARTITION_TABLE_SINGLE_APP_LARGE",
+                        "range": null,
+                        "title": "Single factory app (large), no OTA",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "<choice PARTITION_TABLE_TYPE>",
+                        "help": "This is a basic OTA-enabled partition table with a factory app\npartition plus two OTA app partitions. All are 1MB, so this\npartition table requires 4MB or larger flash size.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_two_ota.csv",
                         "id": "PARTITION_TABLE_TWO_OTA",
                         "name": "PARTITION_TABLE_TWO_OTA",
                         "range": null,
@@ -1796,7 +1796,7 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "Specify the path to the partition table CSV to use for your project.\n\nConsult the Partition Table section in the ESP-IDF Programmers Guide\nfor more information.",
                         "id": "PARTITION_TABLE_CUSTOM",
                         "name": "PARTITION_TABLE_CUSTOM",
                         "range": null,
@@ -1806,7 +1806,7 @@
                     {
                         "children": [],
                         "depends_on": "!ESP32_COREDUMP_ENABLE_TO_FLASH && NVS_ENCRYPTION && <choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is a variation of the default \"Single factory app, no OTA\" partition table\nthat supports encrypted NVS when using flash encryption. See the Flash Encryption section\nin the ESP-IDF Programmers Guide for more information.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp_encr_nvs.csv",
                         "id": "PARTITION_TABLE_SINGLE_APP_ENCRYPTED_NVS",
                         "name": "PARTITION_TABLE_SINGLE_APP_ENCRYPTED_NVS",
                         "range": null,
@@ -1815,8 +1815,18 @@
                     },
                     {
                         "children": [],
+                        "depends_on": "!ESP32_COREDUMP_ENABLE_TO_FLASH && NVS_ENCRYPTION && <choice PARTITION_TABLE_TYPE>",
+                        "help": "This is a variation of the \"Single factory app (large), no OTA\" partition table\nthat supports encrypted NVS when using flash encryption. See the Flash Encryption section\nin the ESP-IDF Programmers Guide for more information.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp_large_encr_nvs.csv",
+                        "id": "PARTITION_TABLE_SINGLE_APP_LARGE_ENC_NVS",
+                        "name": "PARTITION_TABLE_SINGLE_APP_LARGE_ENC_NVS",
+                        "range": null,
+                        "title": "Single factory app (large), no OTA, encrypted NVS",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
                         "depends_on": "!ESP_COREDUMP_ENABLE_TO_FLASH && NVS_ENCRYPTION && <choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is a variation of the \"Factory app, two OTA definitions\" partition table\nthat supports encrypted NVS when using flash encryption. See the Flash Encryption section\nin the ESP-IDF Programmers Guide for more information.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_two_ota_encr_nvs.csv",
                         "id": "PARTITION_TABLE_TWO_OTA_ENCRYPTED_NVS",
                         "name": "PARTITION_TABLE_TWO_OTA_ENCRYPTED_NVS",
                         "range": null,
@@ -1825,7 +1835,7 @@
                     }
                 ],
                 "depends_on": null,
-                "help": "The partition table to flash to the ESP32. The partition table\ndetermines where apps, data and other resources are expected to\nbe found.\n\nThe predefined partition table CSV descriptions can be found\nin the components/partition_table directory. Otherwise it's\npossible to create a new custom partition CSV for your application.",
+                "help": "The partition table to flash to the ESP32. The partition table\ndetermines where apps, data and other resources are expected to\nbe found.\n\nThe predefined partition table CSV descriptions can be found\nin the components/partition_table directory. These are mostly intended\nfor example and development use, it's expect that for production use you\nwill copy one of these CSV files and create a custom partition CSV for\nyour application.",
                 "id": "partition-table-partition-table",
                 "name": "PARTITION_TABLE_TYPE",
                 "title": "Partition Table",
@@ -1863,7 +1873,7 @@
             },
             {
                 "children": [],
-                "depends_on": null,
+                "depends_on": "!ESP32_COMPATIBLE_PRE_V3_1_BOOTLOADERS",
                 "help": "Generate an MD5 checksum for the partition table for protecting the\nintegrity of the table. The generation should be turned off for legacy\nbootloaders which cannot recognize the MD5 checksum in the partition\ntable.",
                 "id": "PARTITION_TABLE_MD5",
                 "name": "PARTITION_TABLE_MD5",
@@ -1875,518 +1885,6 @@
         "depends_on": null,
         "id": "partition-table",
         "title": "Partition Table",
-        "type": "menu"
-    },
-    {
-        "children": [
-            {
-                "children": [
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_CONNECT_WIFI",
-                        "help": "SSID (network name) for the example to connect to.",
-                        "id": "EXAMPLE_WIFI_SSID",
-                        "name": "EXAMPLE_WIFI_SSID",
-                        "range": null,
-                        "title": "WiFi SSID",
-                        "type": "string"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_CONNECT_WIFI",
-                        "help": "WiFi password (WPA or WPA2) for the example to use.\nCan be left blank if the network has no security set.",
-                        "id": "EXAMPLE_WIFI_PASSWORD",
-                        "name": "EXAMPLE_WIFI_PASSWORD",
-                        "range": null,
-                        "title": "WiFi Password",
-                        "type": "string"
-                    },
-                    {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_WIFI_SCAN_METHOD>",
-                                "help": null,
-                                "id": "EXAMPLE_WIFI_SCAN_METHOD_FAST",
-                                "name": "EXAMPLE_WIFI_SCAN_METHOD_FAST",
-                                "range": null,
-                                "title": "Fast",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_WIFI_SCAN_METHOD>",
-                                "help": null,
-                                "id": "EXAMPLE_WIFI_SCAN_METHOD_ALL_CHANNEL",
-                                "name": "EXAMPLE_WIFI_SCAN_METHOD_ALL_CHANNEL",
-                                "range": null,
-                                "title": "All Channel",
-                                "type": "bool"
-                            }
-                        ],
-                        "depends_on": "EXAMPLE_CONNECT_WIFI",
-                        "help": "WiFi scan method:\n\nIf \"Fast\" is selected, scan will end after find SSID match AP.\n\nIf \"All Channel\" is selected, scan will end after scan all the channel.",
-                        "id": "example-connection-configuration-connect-using-wifi-interface-wifi-scan-method",
-                        "name": "EXAMPLE_WIFI_SCAN_METHOD",
-                        "title": "WiFi Scan Method",
-                        "type": "choice"
-                    },
-                    {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "EXAMPLE_CONNECT_WIFI",
-                                "help": "The minimum rssi to accept in the scan mode.",
-                                "id": "EXAMPLE_WIFI_SCAN_RSSI_THRESHOLD",
-                                "name": "EXAMPLE_WIFI_SCAN_RSSI_THRESHOLD",
-                                "range": [
-                                    -127,
-                                    0
-                                ],
-                                "title": "WiFi minimum rssi",
-                                "type": "int"
-                            },
-                            {
-                                "children": [
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_OPEN",
-                                        "name": "EXAMPLE_WIFI_AUTH_OPEN",
-                                        "range": null,
-                                        "title": "OPEN",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WEP",
-                                        "name": "EXAMPLE_WIFI_AUTH_WEP",
-                                        "range": null,
-                                        "title": "WEP",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WPA_PSK",
-                                        "name": "EXAMPLE_WIFI_AUTH_WPA_PSK",
-                                        "range": null,
-                                        "title": "WPA PSK",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WPA2_PSK",
-                                        "name": "EXAMPLE_WIFI_AUTH_WPA2_PSK",
-                                        "range": null,
-                                        "title": "WPA2 PSK",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WPA_WPA2_PSK",
-                                        "name": "EXAMPLE_WIFI_AUTH_WPA_WPA2_PSK",
-                                        "range": null,
-                                        "title": "WPA WPA2 PSK",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WPA2_ENTERPRISE",
-                                        "name": "EXAMPLE_WIFI_AUTH_WPA2_ENTERPRISE",
-                                        "range": null,
-                                        "title": "WPA2 ENTERPRISE",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WPA3_PSK",
-                                        "name": "EXAMPLE_WIFI_AUTH_WPA3_PSK",
-                                        "range": null,
-                                        "title": "WPA3 PSK",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WPA2_WPA3_PSK",
-                                        "name": "EXAMPLE_WIFI_AUTH_WPA2_WPA3_PSK",
-                                        "range": null,
-                                        "title": "WPA2 WPA3 PSK",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "<choice EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD>",
-                                        "help": null,
-                                        "id": "EXAMPLE_WIFI_AUTH_WAPI_PSK",
-                                        "name": "EXAMPLE_WIFI_AUTH_WAPI_PSK",
-                                        "range": null,
-                                        "title": "WAPI PSK",
-                                        "type": "bool"
-                                    }
-                                ],
-                                "depends_on": "EXAMPLE_CONNECT_WIFI",
-                                "help": "The weakest authmode to accept in the scan mode.",
-                                "id": "example-connection-configuration-connect-using-wifi-interface-wifi-scan-threshold-wifi-scan-auth-mode-threshold",
-                                "name": "EXAMPLE_WIFI_SCAN_AUTH_MODE_THRESHOLD",
-                                "title": "WiFi Scan auth mode threshold",
-                                "type": "choice"
-                            }
-                        ],
-                        "depends_on": "EXAMPLE_CONNECT_WIFI",
-                        "id": "example-connection-configuration-connect-using-wifi-interface-wifi-scan-threshold",
-                        "title": "WiFi Scan threshold",
-                        "type": "menu"
-                    },
-                    {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_WIFI_CONNECT_AP_SORT_METHOD>",
-                                "help": null,
-                                "id": "EXAMPLE_WIFI_CONNECT_AP_BY_SIGNAL",
-                                "name": "EXAMPLE_WIFI_CONNECT_AP_BY_SIGNAL",
-                                "range": null,
-                                "title": "Signal",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_WIFI_CONNECT_AP_SORT_METHOD>",
-                                "help": null,
-                                "id": "EXAMPLE_WIFI_CONNECT_AP_BY_SECURITY",
-                                "name": "EXAMPLE_WIFI_CONNECT_AP_BY_SECURITY",
-                                "range": null,
-                                "title": "Security",
-                                "type": "bool"
-                            }
-                        ],
-                        "depends_on": "EXAMPLE_CONNECT_WIFI",
-                        "help": "WiFi connect AP sort method:\n\nIf \"Signal\" is selected, Sort matched APs in scan list by RSSI.\n\nIf \"Security\" is selected, Sort matched APs in scan list by security mode.",
-                        "id": "example-connection-configuration-connect-using-wifi-interface-wifi-connect-ap-sort-method",
-                        "name": "EXAMPLE_WIFI_CONNECT_AP_SORT_METHOD",
-                        "title": "WiFi Connect AP Sort Method",
-                        "type": "choice"
-                    }
-                ],
-                "depends_on": null,
-                "help": "Protocol examples can use Wi-Fi and/or Ethernet to connect to the network.\nChoose this option to connect with WiFi",
-                "id": "EXAMPLE_CONNECT_WIFI",
-                "name": "EXAMPLE_CONNECT_WIFI",
-                "range": null,
-                "title": "connect using WiFi interface",
-                "type": "bool"
-            },
-            {
-                "children": [
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_CONNECT_ETHERNET",
-                        "help": null,
-                        "id": "EXAMPLE_USE_SPI_ETHERNET",
-                        "name": "EXAMPLE_USE_SPI_ETHERNET",
-                        "range": null,
-                        "title": null,
-                        "type": "bool"
-                    },
-                    {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "IDF_TARGET_ESP32 && <choice EXAMPLE_ETHERNET_TYPE>",
-                                "help": "Select internal Ethernet MAC controller.",
-                                "id": "EXAMPLE_USE_INTERNAL_ETHERNET",
-                                "name": "EXAMPLE_USE_INTERNAL_ETHERNET",
-                                "range": null,
-                                "title": "Internal EMAC",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_ETHERNET_TYPE>",
-                                "help": "Select external SPI-Ethernet module.",
-                                "id": "EXAMPLE_USE_DM9051",
-                                "name": "EXAMPLE_USE_DM9051",
-                                "range": null,
-                                "title": "DM9051 Module",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_ETHERNET_TYPE>",
-                                "help": "Select external SPI-Ethernet module (W5500).",
-                                "id": "EXAMPLE_USE_W5500",
-                                "name": "EXAMPLE_USE_W5500",
-                                "range": null,
-                                "title": "W5500 Module",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_ETHERNET_TYPE>",
-                                "help": "When this option is enabled, the example is built with support for\nOpenCores Ethernet MAC, which allows testing the example in QEMU.\nNote that this option is used for internal testing purposes, and\nnot officially supported. Examples built with this option enabled\nwill not run on a real ESP32 chip.",
-                                "id": "EXAMPLE_USE_OPENETH",
-                                "name": "EXAMPLE_USE_OPENETH",
-                                "range": null,
-                                "title": "OpenCores Ethernet MAC (EXPERIMENTAL)",
-                                "type": "bool"
-                            }
-                        ],
-                        "depends_on": "EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Select which kind of Ethernet will be used in the example.",
-                        "id": "example-connection-configuration-connect-using-ethernet-interface-ethernet-type",
-                        "name": "EXAMPLE_ETHERNET_TYPE",
-                        "title": "Ethernet Type",
-                        "type": "choice"
-                    },
-                    {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_ETH_PHY_MODEL>",
-                                "help": "IP101 is a single port 10/100 MII/RMII/TP/Fiber Fast Ethernet Transceiver.\nGoto http://www.icplus.com.tw/pp-IP101G.html for more information about it.",
-                                "id": "EXAMPLE_ETH_PHY_IP101",
-                                "name": "EXAMPLE_ETH_PHY_IP101",
-                                "range": null,
-                                "title": "IP101",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_ETH_PHY_MODEL>",
-                                "help": "RTL8201F/SR8201F is a single port 10/100Mb Ethernet Transceiver with auto MDIX.\nGoto http://www.corechip-sz.com/productsview.asp?id=22 for more information about it.",
-                                "id": "EXAMPLE_ETH_PHY_RTL8201",
-                                "name": "EXAMPLE_ETH_PHY_RTL8201",
-                                "range": null,
-                                "title": "RTL8201/SR8201",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_ETH_PHY_MODEL>",
-                                "help": "LAN8720A is a small footprint RMII 10/100 Ethernet Transceiver with HP Auto-MDIX Support.\nGoto https://www.microchip.com/LAN8720A for more information about it.",
-                                "id": "EXAMPLE_ETH_PHY_LAN8720",
-                                "name": "EXAMPLE_ETH_PHY_LAN8720",
-                                "range": null,
-                                "title": "LAN8720",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_ETH_PHY_MODEL>",
-                                "help": "DP83848 is a single port 10/100Mb/s Ethernet Physical Layer Transceiver.\nGoto http://www.ti.com/product/DP83848J for more information about it.",
-                                "id": "EXAMPLE_ETH_PHY_DP83848",
-                                "name": "EXAMPLE_ETH_PHY_DP83848",
-                                "range": null,
-                                "title": "DP83848",
-                                "type": "bool"
-                            }
-                        ],
-                        "depends_on": "EXAMPLE_USE_INTERNAL_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Select the Ethernet PHY device to use in the example.",
-                        "id": "example-connection-configuration-connect-using-ethernet-interface-ethernet-phy-device",
-                        "name": "EXAMPLE_ETH_PHY_MODEL",
-                        "title": "Ethernet PHY Device",
-                        "type": "choice"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_INTERNAL_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used by SMI MDC.",
-                        "id": "EXAMPLE_ETH_MDC_GPIO",
-                        "name": "EXAMPLE_ETH_MDC_GPIO",
-                        "range": null,
-                        "title": "SMI MDC GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_INTERNAL_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used by SMI MDIO.",
-                        "id": "EXAMPLE_ETH_MDIO_GPIO",
-                        "name": "EXAMPLE_ETH_MDIO_GPIO",
-                        "range": null,
-                        "title": "SMI MDIO GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_SPI_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the SPI host used to communicate with the SPI Ethernet Controller.",
-                        "id": "EXAMPLE_ETH_SPI_HOST",
-                        "name": "EXAMPLE_ETH_SPI_HOST",
-                        "range": null,
-                        "title": "SPI Host Number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_SPI_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used by SPI SCLK.",
-                        "id": "EXAMPLE_ETH_SPI_SCLK_GPIO",
-                        "name": "EXAMPLE_ETH_SPI_SCLK_GPIO",
-                        "range": null,
-                        "title": "SPI SCLK GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_SPI_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used by SPI MOSI.",
-                        "id": "EXAMPLE_ETH_SPI_MOSI_GPIO",
-                        "name": "EXAMPLE_ETH_SPI_MOSI_GPIO",
-                        "range": null,
-                        "title": "SPI MOSI GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_SPI_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used by SPI MISO.",
-                        "id": "EXAMPLE_ETH_SPI_MISO_GPIO",
-                        "name": "EXAMPLE_ETH_SPI_MISO_GPIO",
-                        "range": null,
-                        "title": "SPI MISO GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_SPI_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used by SPI CS.",
-                        "id": "EXAMPLE_ETH_SPI_CS_GPIO",
-                        "name": "EXAMPLE_ETH_SPI_CS_GPIO",
-                        "range": null,
-                        "title": "SPI CS GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_SPI_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the clock speed (MHz) of SPI interface.",
-                        "id": "EXAMPLE_ETH_SPI_CLOCK_MHZ",
-                        "name": "EXAMPLE_ETH_SPI_CLOCK_MHZ",
-                        "range": null,
-                        "title": "SPI clock speed (MHz)",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_USE_SPI_ETHERNET && EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used by the SPI Ethernet module interrupt line.",
-                        "id": "EXAMPLE_ETH_SPI_INT_GPIO",
-                        "name": "EXAMPLE_ETH_SPI_INT_GPIO",
-                        "range": null,
-                        "title": "Interrupt GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set the GPIO number used to reset PHY chip.\nSet to -1 to disable PHY chip hardware reset.",
-                        "id": "EXAMPLE_ETH_PHY_RST_GPIO",
-                        "name": "EXAMPLE_ETH_PHY_RST_GPIO",
-                        "range": null,
-                        "title": "PHY Reset GPIO number",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "EXAMPLE_CONNECT_ETHERNET",
-                        "help": "Set PHY address according your board schematic.",
-                        "id": "EXAMPLE_ETH_PHY_ADDR",
-                        "name": "EXAMPLE_ETH_PHY_ADDR",
-                        "range": null,
-                        "title": "PHY Address",
-                        "type": "int"
-                    }
-                ],
-                "depends_on": null,
-                "help": "Protocol examples can use Wi-Fi and/or Ethernet to connect to the network.\nChoose this option to connect with Ethernet",
-                "id": "EXAMPLE_CONNECT_ETHERNET",
-                "name": "EXAMPLE_CONNECT_ETHERNET",
-                "range": null,
-                "title": "connect using Ethernet interface",
-                "type": "bool"
-            },
-            {
-                "children": [
-                    {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_CONNECT_PREFERRED_IPV6>",
-                                "help": "Blocks until Local link address assigned.",
-                                "id": "EXAMPLE_CONNECT_IPV6_PREF_LOCAL_LINK",
-                                "name": "EXAMPLE_CONNECT_IPV6_PREF_LOCAL_LINK",
-                                "range": null,
-                                "title": "Local Link Address",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_CONNECT_PREFERRED_IPV6>",
-                                "help": "Blocks until Global address assigned.",
-                                "id": "EXAMPLE_CONNECT_IPV6_PREF_GLOBAL",
-                                "name": "EXAMPLE_CONNECT_IPV6_PREF_GLOBAL",
-                                "range": null,
-                                "title": "Global Address",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_CONNECT_PREFERRED_IPV6>",
-                                "help": "Blocks until Site link address assigned.",
-                                "id": "EXAMPLE_CONNECT_IPV6_PREF_SITE_LOCAL",
-                                "name": "EXAMPLE_CONNECT_IPV6_PREF_SITE_LOCAL",
-                                "range": null,
-                                "title": "Site Local Address",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "<choice EXAMPLE_CONNECT_PREFERRED_IPV6>",
-                                "help": "Blocks until Unique local address assigned.",
-                                "id": "EXAMPLE_CONNECT_IPV6_PREF_UNIQUE_LOCAL",
-                                "name": "EXAMPLE_CONNECT_IPV6_PREF_UNIQUE_LOCAL",
-                                "range": null,
-                                "title": "Unique Local Link Address",
-                                "type": "bool"
-                            }
-                        ],
-                        "depends_on": "EXAMPLE_CONNECT_IPV6",
-                        "help": "Select which kind of IPv6 address the connect logic waits for.",
-                        "id": "example-connection-configuration-obtain-ipv6-address-preferred-ipv6-type",
-                        "name": "EXAMPLE_CONNECT_PREFERRED_IPV6",
-                        "title": "Preferred IPv6 Type",
-                        "type": "choice"
-                    }
-                ],
-                "depends_on": "EXAMPLE_CONNECT_WIFI || EXAMPLE_CONNECT_ETHERNET",
-                "help": "By default, examples will wait until IPv4 and IPv6 local link addresses are obtained.\nDisable this option if the network does not support IPv6.\nChoose the preferred IPv6 address type if the connection code should wait until other than\nthe local link address gets assigned.\nConsider enabling IPv6 stateless address autoconfiguration (SLAAC) in the LWIP component.",
-                "id": "EXAMPLE_CONNECT_IPV6",
-                "name": "EXAMPLE_CONNECT_IPV6",
-                "range": null,
-                "title": "Obtain IPv6 address",
-                "type": "bool"
-            }
-        ],
-        "depends_on": null,
-        "id": "example-connection-configuration",
-        "title": "Example Connection Configuration",
         "type": "menu"
     },
     {
@@ -2480,6 +1978,16 @@
                 "name": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL",
                 "title": "Assertion level",
                 "type": "choice"
+            },
+            {
+                "children": [],
+                "depends_on": null,
+                "help": null,
+                "id": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL",
+                "name": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL",
+                "range": null,
+                "title": null,
+                "type": "int"
             },
             {
                 "children": [],
@@ -2578,7 +2086,7 @@
                     }
                 ],
                 "depends_on": null,
-                "help": "Stack smashing protection mode. Emit extra code to check for buffer overflows, such as stack\nsmashing attacks. This is done by adding a guard variable to functions with vulnerable objects.\nThe guards are initialized when a function is entered and then checked when the function exits.\nIf a guard check fails, program is halted. Protection has the following modes:\n\n- In NORMAL mode (GCC flag: -fstack-protector) only functions that call alloca, and functions with\n  buffers larger than 8 bytes are protected.\n\n- STRONG mode (GCC flag: -fstack-protector-strong) is like NORMAL, but includes additional functions\n  to be protected -- those that have local array definitions, or have references to local frame\n  addresses.\n\n- In OVERALL mode (GCC flag: -fstack-protector-all) all functions are protected.\n\nModes have the following impact on code performance and coverage:\n\n- performance: NORMAL > STRONG > OVERALL\n\n- coverage: NORMAL < STRONG < OVERALL",
+                "help": "Stack smashing protection mode. Emit extra code to check for buffer overflows, such as stack\nsmashing attacks. This is done by adding a guard variable to functions with vulnerable objects.\nThe guards are initialized when a function is entered and then checked when the function exits.\nIf a guard check fails, program is halted. Protection has the following modes:\n\n- In NORMAL mode (GCC flag: -fstack-protector) only functions that call alloca, and functions with\n  buffers larger than 8 bytes are protected.\n\n- STRONG mode (GCC flag: -fstack-protector-strong) is like NORMAL, but includes additional functions\n  to be protected -- those that have local array definitions, or have references to local frame\n  addresses.\n\n- In OVERALL mode (GCC flag: -fstack-protector-all) all functions are protected.\n\nModes have the following impact on code performance and coverage:\n\n- performance: NORMAL > STRONG > OVERALL\n\n- coverage: NORMAL < STRONG < OVERALL\n\nThe performance impact includes increasing the amount of stack memory required for each task.",
                 "id": "compiler-options-stack-smashing-protection-mode",
                 "name": "COMPILER_STACK_CHECK_MODE",
                 "title": "Stack smashing protection mode",
@@ -3126,7 +2634,7 @@
                             {
                                 "children": [],
                                 "depends_on": "BTDM_CTRL_MODE_BR_EDR_ONLY || BTDM_CTRL_MODE_BTDM",
-                                "help": "BR/EDR ACL maximum connections of bluetooth controller.\nEach connection uses 1.2KB static DRAM whenever the BT controller is enabled.",
+                                "help": "BR/EDR ACL maximum connections of bluetooth controller.\nEach connection uses 1.2 KB DRAM whenever the BT controller is enabled.",
                                 "id": "BTDM_CTRL_BR_EDR_MAX_ACL_CONN",
                                 "name": "BTDM_CTRL_BR_EDR_MAX_ACL_CONN",
                                 "range": null,
@@ -3136,7 +2644,7 @@
                             {
                                 "children": [],
                                 "depends_on": "BTDM_CTRL_MODE_BR_EDR_ONLY || BTDM_CTRL_MODE_BTDM",
-                                "help": "BR/EDR Synchronize maximum connections of bluetooth controller.\nEach connection uses 2KB static DRAM whenever the BT controller is enabled.",
+                                "help": "BR/EDR Synchronize maximum connections of bluetooth controller.\nEach connection uses 2 KB DRAM whenever the BT controller is enabled.",
                                 "id": "BTDM_CTRL_BR_EDR_MAX_SYNC_CONN",
                                 "name": "BTDM_CTRL_BR_EDR_MAX_SYNC_CONN",
                                 "range": null,
@@ -3694,28 +3202,6 @@
                                 "range": null,
                                 "title": "BLE adv report flow control supported",
                                 "type": "bool"
-                            },
-                            {
-                                "children": [
-                                    {
-                                        "children": [],
-                                        "depends_on": "BTDM_COEX_BT_OPTIONS",
-                                        "help": "Improve BLE ADV coexistence priority to make it better performance.\nFor example, BLE mesh need to enable this option to improve BLE adv performance.",
-                                        "id": "BTDM_COEX_BLE_ADV_HIGH_PRIORITY",
-                                        "name": "BTDM_COEX_BLE_ADV_HIGH_PRIORITY",
-                                        "range": null,
-                                        "title": "Improve BLE ADV priority for WiFi & BLE coexistence",
-                                        "type": "bool"
-                                    }
-                                ],
-                                "depends_on": "ESP32_WIFI_SW_COEXIST_ENABLE",
-                                "help": "Options of Bluetooth Side of WiFi and bluetooth coexistence.",
-                                "id": "BTDM_COEX_BT_OPTIONS",
-                                "is_menuconfig": true,
-                                "name": "BTDM_COEX_BT_OPTIONS",
-                                "range": null,
-                                "title": "Coexistence Bluetooth Side Options",
-                                "type": "menu"
                             }
                         ],
                         "depends_on": null,
@@ -5460,6 +4946,16 @@
                                                 "type": "bool"
                                             },
                                             {
+                                                "children": [],
+                                                "depends_on": "BT_GATTS_ENABLE && BT_BLUEDROID_ENABLED",
+                                                "help": "Maximum GATT Server Profiles Count",
+                                                "id": "BT_GATT_SR_PROFILES",
+                                                "name": "BT_GATT_SR_PROFILES",
+                                                "range": null,
+                                                "title": "Max GATT Server Profiles",
+                                                "type": "int"
+                                            },
+                                            {
                                                 "children": [
                                                     {
                                                         "children": [],
@@ -5519,6 +5015,16 @@
                                                 "range": null,
                                                 "title": "Save gattc cache data to nvs flash",
                                                 "type": "bool"
+                                            },
+                                            {
+                                                "children": [],
+                                                "depends_on": "BT_GATTC_ENABLE",
+                                                "help": "The number of attempts to reconnect if the connection establishment failed",
+                                                "id": "BT_GATTC_CONNECT_RETRY_COUNT",
+                                                "name": "BT_GATTC_CONNECT_RETRY_COUNT",
+                                                "range": null,
+                                                "title": "The number of attempts to reconnect if the connection establishment failed",
+                                                "type": "int"
                                             }
                                         ],
                                         "depends_on": "BT_BLE_ENABLED",
@@ -7480,6 +6986,16 @@
                             {
                                 "children": [],
                                 "depends_on": "BT_BLUEDROID_ENABLED",
+                                "help": "Enable this option if there are multiple connections",
+                                "id": "BT_MULTI_CONNECTION_ENBALE",
+                                "name": "BT_MULTI_CONNECTION_ENBALE",
+                                "range": null,
+                                "title": "Enable BLE multi-conections",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BT_BLUEDROID_ENABLED",
                                 "help": "This select can save the internal RAM if there have the PSRAM",
                                 "id": "BT_ALLOCATION_FROM_SPIRAM_FIRST",
                                 "name": "BT_ALLOCATION_FROM_SPIRAM_FIRST",
@@ -7599,7 +7115,7 @@
                                     },
                                     {
                                         "children": [],
-                                        "depends_on": "ESP32_SPIRAM_SUPPORT && <choice BT_NIMBLE_MEM_ALLOC_MODE>",
+                                        "depends_on": "(SPIRAM_USE_CAPS_ALLOC || SPIRAM_USE_MALLOC) && <choice BT_NIMBLE_MEM_ALLOC_MODE>",
                                         "help": null,
                                         "id": "BT_NIMBLE_MEM_ALLOC_MODE_EXTERNAL",
                                         "name": "BT_NIMBLE_MEM_ALLOC_MODE_EXTERNAL",
@@ -7629,7 +7145,7 @@
                                     }
                                 ],
                                 "depends_on": null,
-                                "help": "Allocation strategy for NimBLE host stack, essentially provides ability to\nallocate all required dynamic allocations from,\n\n- Internal DRAM memory only\n- External SPIRAM memory only\n- Either internal or external memory based on default malloc()\n  behavior in ESP-IDF\n- Internal IRAM memory wherever applicable else internal DRAM\n\nRecommended mode here is always internal, since that is most preferred\nfrom security perspective. But if application requirement does not\nallow sufficient free internal memory then alternate mode can be\nselected.",
+                                "help": "Allocation strategy for NimBLE host stack, essentially provides ability to\nallocate all required dynamic allocations from,\n\n- Internal DRAM memory only\n- External SPIRAM memory only\n- Either internal or external memory based on default malloc()\n  behavior in ESP-IDF\n- Internal IRAM memory wherever applicable else internal DRAM",
                                 "id": "component-config-bluetooth-nimble-options-memory-allocation-strategy",
                                 "name": "BT_NIMBLE_MEM_ALLOC_MODE",
                                 "title": "Memory allocation strategy",
@@ -7718,7 +7234,7 @@
                             {
                                 "children": [],
                                 "depends_on": "BT_NIMBLE_ENABLED",
-                                "help": "Defines maximum number of concurrent BLE connections",
+                                "help": "Defines maximum number of concurrent BLE connections. For ESP32, user\nis expected to configure BTDM_CTRL_BLE_MAX_CONN from controller menu\nalong with this option. Similarly for ESP32-C3 or ESP32-S3, user is expected to\nconfigure BT_CTRL_BLE_MAX_ACT from controller menu.",
                                 "id": "BT_NIMBLE_MAX_CONNECTIONS",
                                 "name": "BT_NIMBLE_MAX_CONNECTIONS",
                                 "range": null,
@@ -8203,6 +7719,27 @@
                                 "children": [
                                     {
                                         "children": [],
+                                        "depends_on": "BT_NIMBLE_ENABLED && BT_NIMBLE_ENABLE_CONN_REATTEMPT",
+                                        "help": "Defines maximum number of connection reattempts.",
+                                        "id": "BT_NIMBLE_MAX_CONN_REATTEMPT",
+                                        "name": "BT_NIMBLE_MAX_CONN_REATTEMPT",
+                                        "range": null,
+                                        "title": "Maximum number connection reattempts",
+                                        "type": "int"
+                                    }
+                                ],
+                                "depends_on": null,
+                                "help": "Enable to make the NimBLE host to reattempt GAP connection on connection\nestablishment failure.",
+                                "id": "BT_NIMBLE_ENABLE_CONN_REATTEMPT",
+                                "name": "BT_NIMBLE_ENABLE_CONN_REATTEMPT",
+                                "range": null,
+                                "title": "Enable connection reattempts on connection establishment error",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
                                         "depends_on": "BT_NIMBLE_EXT_ADV",
                                         "help": "Change this option to set maximum number of extended advertising\ninstances. Minimum there is always one instance of\nadvertising. Enter how many more advertising instances you\nwant.",
                                         "id": "BT_NIMBLE_MAX_EXT_ADV_INSTANCES",
@@ -8299,7 +7836,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "ESP32_SPIRAM_SUPPORT && <choice BLE_MESH_MEM_ALLOC_MODE>",
+                                "depends_on": "(SPIRAM_USE_CAPS_ALLOC || SPIRAM_USE_MALLOC) && <choice BLE_MESH_MEM_ALLOC_MODE>",
                                 "help": null,
                                 "id": "BLE_MESH_MEM_ALLOC_MODE_EXTERNAL",
                                 "name": "BLE_MESH_MEM_ALLOC_MODE_EXTERNAL",
@@ -8309,7 +7846,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "ESP32_SPIRAM_SUPPORT && <choice BLE_MESH_MEM_ALLOC_MODE>",
+                                "depends_on": "<choice BLE_MESH_MEM_ALLOC_MODE>",
                                 "help": "Enable this option to use the default memory allocation strategy when\nexternal SPIRAM is enabled. See the SPIRAM options for more details.",
                                 "id": "BLE_MESH_MEM_ALLOC_MODE_DEFAULT",
                                 "name": "BLE_MESH_MEM_ALLOC_MODE_DEFAULT",
@@ -8329,7 +7866,7 @@
                             }
                         ],
                         "depends_on": "BLE_MESH",
-                        "help": "Allocation strategy for BLE Mesh stack, essentially provides ability to\nallocate all required dynamic allocations from,\n\n- Internal DRAM memory only\n- External SPIRAM memory only\n- Either internal or external memory based on default malloc()\n  behavior in ESP-IDF\n- Internal IRAM memory wherever applicable else internal DRAM\n\nRecommended mode here is always internal, since that is most preferred\nfrom security perspective. But if application requirement does not allow\nsufficient free internal memory then alternate mode can be selected.",
+                        "help": "Allocation strategy for BLE Mesh stack, essentially provides ability to\nallocate all required dynamic allocations from,\n\n- Internal DRAM memory only\n- External SPIRAM memory only\n- Either internal or external memory based on default malloc()\n  behavior in ESP-IDF\n- Internal IRAM memory wherever applicable else internal DRAM\n\nRecommended mode here is always internal (*), since that is most preferred\nfrom security perspective. But if application requirement does not\nallow sufficient free internal memory then alternate mode can be\nselected.\n\n(*) In case of ESP32-S2/ESP32-S3, hardware allows encryption of external\nSPIRAM contents provided hardware flash encryption feature is enabled.\nIn that case, using external SPIRAM allocation strategy is also safe choice\nfrom security perspective.",
                         "id": "component-config-esp-ble-mesh-support-memory-allocation-strategy",
                         "name": "BLE_MESH_MEM_ALLOC_MODE",
                         "title": "Memory allocation strategy",
@@ -8548,7 +8085,18 @@
                         "type": "bool"
                     },
                     {
-                        "children": [],
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "BLE_MESH_NODE && BLE_MESH_PB_ADV && BLE_MESH",
+                                "help": "This option specifies the interval of sending two consecutive unprovisioned\ndevice beacon, users can use this option to change the frequency of sending\nunprovisioned device beacon. For example, if the value is 5, it means the\nunprovisioned device beacon will send every 5 seconds. When the option of\nBLE_MESH_FAST_PROV is selected, the value is better to be 3 seconds, or less.",
+                                "id": "BLE_MESH_UNPROVISIONED_BEACON_INTERVAL",
+                                "name": "BLE_MESH_UNPROVISIONED_BEACON_INTERVAL",
+                                "range": null,
+                                "title": "Interval between two consecutive Unprovisioned Device Beacon",
+                                "type": "int"
+                            }
+                        ],
                         "depends_on": "BLE_MESH",
                         "help": "Enable this option to allow the device to be provisioned over the\nadvertising bearer. This option should be enabled if PB-ADV is\ngoing to be used during provisioning procedure.",
                         "id": "BLE_MESH_PB_ADV",
@@ -10087,9 +9635,20 @@
                         "type": "bool"
                     },
                     {
-                        "children": [],
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "EFUSE_VIRTUAL",
+                                "help": "In addition to the \"Simulate eFuse operations in RAM\" option, this option just adds\na feature to keep eFuses after reboots in flash memory. To use this mode the partition_table\nshould have the `efuse` partition. partition.csv: \"efuse_em, data, efuse,   ,   0x2000,\"\n\nDuring startup, the eFuses are copied from flash or,\nin case if flash is empty, from real eFuse to RAM and then update flash.\nThis mode is useful when need to keep changes after reboot\n(testing secure_boot and flash_encryption).",
+                                "id": "EFUSE_VIRTUAL_KEEP_IN_FLASH",
+                                "name": "EFUSE_VIRTUAL_KEEP_IN_FLASH",
+                                "range": null,
+                                "title": "Keep eFuses in flash",
+                                "type": "bool"
+                            }
+                        ],
                         "depends_on": null,
-                        "help": "All read and writes operations are redirected to RAM instead of eFuse registers.\nIf this option is set, all permanent changes (via eFuse) are disabled.\nLog output will state changes which would be applied, but they will not be.",
+                        "help": "If \"n\" - No virtual mode. All eFuse operations are real and use eFuse registers.\nIf \"y\" - The virtual mode is enabled and all eFuse operations (read and write) are redirected\nto RAM instead of eFuse registers, all permanent changes (via eFuse) are disabled.\nLog output will state changes that would be applied, but they will not be.\n\nDuring startup, the eFuses are copied into RAM. This mode is useful for fast tests.",
                         "id": "EFUSE_VIRTUAL",
                         "name": "EFUSE_VIRTUAL",
                         "range": null,
@@ -10602,7 +10161,7 @@
                         "name": "ESP32C3_RTC_CLK_CAL_CYCLES",
                         "range": [
                             0,
-                            125000
+                            32766
                         ],
                         "title": "Number of cycles for RTC_SLOW_CLK calibration",
                         "type": "int"
@@ -10873,6 +10432,16 @@
                                 "name": "ETH_SPI_ETHERNET_W5500",
                                 "range": null,
                                 "title": "Use W5500 (MAC RAW)",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "ETH_USE_SPI_ETHERNET",
+                                "help": "The KSZ8851SNL is a single-chip Fast Ethernet controller consisting of\na 10/100 physical layer transceiver (PHY), a MAC, and a Serial Peripheral Interface (SPI).\nSelect this to enable KSZ8851SNL driver.",
+                                "id": "ETH_SPI_ETHERNET_KSZ8851SNL",
+                                "name": "ETH_SPI_ETHERNET_KSZ8851SNL",
+                                "range": null,
+                                "title": "Use KSZ8851SNL",
                                 "type": "bool"
                             }
                         ],
@@ -11211,7 +10780,7 @@
                                     }
                                 ],
                                 "depends_on": null,
-                                "help": "Configure the number of universally administered (by IEEE) MAC addresses.\nDuring initialization, MAC addresses for each network interface are generated or derived from a\nsingle base MAC address.\nIf the number of universal MAC addresses is four, all four interfaces (WiFi station, WiFi softap,\nBluetooth and Ethernet) receive a universally administered MAC address. These are generated\nsequentially by adding 0, 1, 2 and 3 (respectively) to the final octet of the base MAC address.\nIf the number of universal MAC addresses is two, only two interfaces (WiFi station and Bluetooth)\nreceive a universally administered MAC address. These are generated sequentially by adding 0\nand 1 (respectively) to the base MAC address. The remaining two interfaces (WiFi softap and Ethernet)\nreceive local MAC addresses. These are derived from the universal WiFi station and Bluetooth MAC\naddresses, respectively.\nWhen using the default (Espressif-assigned) base MAC address, either setting can be used. When using\na custom universal MAC address range, the correct setting will depend on the allocation of MAC\naddresses in this range (either 2 or 4 per device.)",
+                                "help": "Configure the number of universally administered (by IEEE) MAC addresses.\n\nDuring initialization, MAC addresses for each network interface are generated or derived from a\nsingle base MAC address.\n\nIf the number of universal MAC addresses is four, all four interfaces (WiFi station, WiFi softap,\nBluetooth and Ethernet) receive a universally administered MAC address. These are generated\nsequentially by adding 0, 1, 2 and 3 (respectively) to the final octet of the base MAC address.\n\nIf the number of universal MAC addresses is two, only two interfaces (WiFi station and Bluetooth)\nreceive a universally administered MAC address. These are generated sequentially by adding 0\nand 1 (respectively) to the base MAC address. The remaining two interfaces (WiFi softap and Ethernet)\nreceive local MAC addresses. These are derived from the universal WiFi station and Bluetooth MAC\naddresses, respectively.\n\nWhen using the default (Espressif-assigned) base MAC address, either setting can be used. When using\na custom universal MAC address range, the correct setting will depend on the allocation of MAC\naddresses in this range (either 2 or 4 per device.)\n\nNote that ESP32-C3 has no integrated Ethernet MAC. Although it's possible to use the esp_read_mac()\nAPI to return a MAC for Ethernet, this can only be used with an external MAC peripheral.",
                                 "id": "component-config-hardware-settings-mac-config-number-of-universally-administered-by-ieee-mac-address",
                                 "name": "ESP32C3_UNIVERSAL_MAC_ADDRESSES",
                                 "title": "Number of universally administered (by IEEE) MAC address",
@@ -11255,6 +10824,52 @@
                 "depends_on": null,
                 "id": "component-config-hardware-settings",
                 "title": "Hardware Settings",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice LCD_PERIPH_CLK_SRC>",
+                                        "help": null,
+                                        "id": "LCD_PERIPH_CLK_SRC_PLL160M",
+                                        "name": "LCD_PERIPH_CLK_SRC_PLL160M",
+                                        "range": null,
+                                        "title": "PLL_160M clock",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice LCD_PERIPH_CLK_SRC>",
+                                        "help": null,
+                                        "id": "LCD_PERIPH_CLK_SRC_XTAL",
+                                        "name": "LCD_PERIPH_CLK_SRC_XTAL",
+                                        "range": null,
+                                        "title": "XTAL clock",
+                                        "type": "bool"
+                                    }
+                                ],
+                                "depends_on": "IDF_TARGET_ESP32S3",
+                                "help": "The peripheral clock is where LCD bus clock derives from.\nEach clock source has its unique feature, e.g.\n1. XTAL clock can help LCD work stable when DFS is enabled\n2. PLL160M can achieve higher pixel clock resolution",
+                                "id": "component-config-lcd-and-touch-panel-lcd-peripheral-configuration-select-clock-source-for-lcd-peripheral",
+                                "name": "LCD_PERIPH_CLK_SRC",
+                                "title": "Select clock source for LCD peripheral",
+                                "type": "choice"
+                            }
+                        ],
+                        "depends_on": "IDF_TARGET_ESP32S3",
+                        "id": "component-config-lcd-and-touch-panel-lcd-peripheral-configuration",
+                        "title": "LCD Peripheral Configuration",
+                        "type": "menu"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-lcd-and-touch-panel",
+                "title": "LCD and Touch Panel",
                 "type": "menu"
             },
             {
@@ -11316,6 +10931,110 @@
                 "depends_on": null,
                 "id": "component-config-esp-netif-adapter",
                 "title": "ESP NETIF Adapter",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "If this option is enabled, NVS will be initialized and calibration data will be loaded from there.\nPHY calibration will be skipped on deep sleep wakeup. If calibration data is not found, full calibration\nwill be performed and stored in NVS. Normally, only partial calibration will be performed.\nIf this option is disabled, full calibration will be performed.\n\nIf it's easy that your board calibrate bad data, choose 'n'.\nTwo cases for example, you should choose 'n':\n1.If your board is easy to be booted up with antenna disconnected.\n2.Because of your board design, each time when you do calibration, the result are too unstable.\nIf unsure, choose 'y'.",
+                        "id": "ESP32_PHY_CALIBRATION_AND_DATA_STORAGE",
+                        "name": "ESP32_PHY_CALIBRATION_AND_DATA_STORAGE",
+                        "range": null,
+                        "title": "Store phy calibration data in NVS",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "ESP32_PHY_INIT_DATA_IN_PARTITION",
+                                "help": "If enabled, PHY init data will be restored to default if\nit cannot be verified successfully to avoid endless bootloops.\n\nIf unsure, choose 'n'.",
+                                "id": "ESP32_PHY_DEFAULT_INIT_IF_INVALID",
+                                "name": "ESP32_PHY_DEFAULT_INIT_IF_INVALID",
+                                "range": null,
+                                "title": "Reset default PHY init data if invalid",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "ESP32_SUPPORT_MULTIPLE_PHY_INIT_DATA_BIN && ESP32_PHY_INIT_DATA_IN_PARTITION",
+                                        "help": "If enabled, when an error occurs while the PHY init data is updated,\nthe program will terminate and restart.\nIf not enabled, the PHY init data will not be updated when an error occurs.",
+                                        "id": "ESP32_PHY_INIT_DATA_ERROR",
+                                        "name": "ESP32_PHY_INIT_DATA_ERROR",
+                                        "range": null,
+                                        "title": "Terminate operation when PHY init data error",
+                                        "type": "bool"
+                                    }
+                                ],
+                                "depends_on": "ESP32_PHY_INIT_DATA_IN_PARTITION && ESP32_PHY_INIT_DATA_IN_PARTITION",
+                                "help": "If enabled, the corresponding PHY init data type can be automatically switched\naccording to the country code. China's PHY init data bin is used by default.\nCan be modified by country information in API esp_wifi_set_country().\nThe priority of switching the PHY init data type is:\n1. Country configured by API esp_wifi_set_country()\nand the parameter policy is WIFI_COUNTRY_POLICY_MANUAL.\n2. Country notified by the connected AP.\n3. Country configured by API esp_wifi_set_country()\nand the parameter policy is WIFI_COUNTRY_POLICY_AUTO.",
+                                "id": "ESP32_SUPPORT_MULTIPLE_PHY_INIT_DATA_BIN",
+                                "name": "ESP32_SUPPORT_MULTIPLE_PHY_INIT_DATA_BIN",
+                                "range": null,
+                                "title": "Support multiple PHY init data bin",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "If enabled, PHY init data will be loaded from a partition.\nWhen using a custom partition table, make sure that PHY data\npartition is included (type: 'data', subtype: 'phy').\nWith default partition tables, this is done automatically.\nIf PHY init data is stored in a partition, it has to be flashed there,\notherwise runtime error will occur.\n\nIf this option is not enabled, PHY init data will be embedded\ninto the application binary.\n\nIf unsure, choose 'n'.",
+                        "id": "ESP32_PHY_INIT_DATA_IN_PARTITION",
+                        "is_menuconfig": true,
+                        "name": "ESP32_PHY_INIT_DATA_IN_PARTITION",
+                        "range": null,
+                        "title": "Use a partition to store PHY init data",
+                        "type": "menu"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Set maximum transmit power for WiFi radio. Actual transmit power for high\ndata rates may be lower than this setting.",
+                        "id": "ESP32_PHY_MAX_WIFI_TX_POWER",
+                        "name": "ESP32_PHY_MAX_WIFI_TX_POWER",
+                        "range": [
+                            10,
+                            20
+                        ],
+                        "title": "Max WiFi TX power (dBm)",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "ESP32_PHY_MAX_TX_POWER",
+                        "name": "ESP32_PHY_MAX_TX_POWER",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "IDF_TARGET_ESP32C3 && FREERTOS_USE_TICKLESS_IDLE",
+                        "help": "If enabled, the MAC and baseband of Wi-Fi and Bluetooth will be powered\ndown when PHY is disabled. Enabling this setting reduces power consumption\nby a small amount but increases RAM use by approximately 4 KB(Wi-Fi only),\n2 KB(Bluetooth only) or 5.3 KB(Wi-Fi + Bluetooth).",
+                        "id": "ESP32_PHY_MAC_BB_PD",
+                        "name": "ESP32_PHY_MAC_BB_PD",
+                        "range": null,
+                        "title": "Power down MAC and baseband of Wi-Fi and Bluetooth when PHY is disabled",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "ESP32_BROWNOUT_DET",
+                        "help": "When brownout reset occurs, reduce PHY TX power to keep the code running.",
+                        "id": "ESP32_REDUCE_PHY_TX_POWER",
+                        "name": "ESP32_REDUCE_PHY_TX_POWER",
+                        "range": null,
+                        "title": "Reduce PHY TX power when brownout reset",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-phy",
+                "title": "PHY",
                 "type": "menu"
             },
             {
@@ -11468,7 +11187,17 @@
                                 "id": "ESP_SYSTEM_PANIC_GDBSTUB",
                                 "name": "ESP_SYSTEM_PANIC_GDBSTUB",
                                 "range": null,
-                                "title": "Invoke GDBStub",
+                                "title": "GDBStub on panic",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
+                                "help": "Invoke gdbstub on the serial port, allowing for gdb to attach to it and to do a debug on runtime.\nThis feature will switch system to single core mode.",
+                                "id": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                                "name": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                                "range": null,
+                                "title": "GDBStub at runtime",
                                 "type": "bool"
                             }
                         ],
@@ -11672,6 +11401,16 @@
                             },
                             {
                                 "children": [],
+                                "depends_on": "(IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3) && <choice ESP_CONSOLE_UART>",
+                                "help": null,
+                                "id": "ESP_CONSOLE_USB_SERIAL_JTAG",
+                                "name": "ESP_CONSOLE_USB_SERIAL_JTAG",
+                                "range": null,
+                                "title": "USB Serial/JTAG Controller",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
                                 "depends_on": "<choice ESP_CONSOLE_UART>",
                                 "help": null,
                                 "id": "ESP_CONSOLE_UART_CUSTOM",
@@ -11692,7 +11431,7 @@
                             }
                         ],
                         "depends_on": null,
-                        "help": "Select where to send console output (through stdout and stderr).\n\n- Default is to use UART0 on pre-defined GPIOs.\n- If \"Custom\" is selected, UART0 or UART1 can be chosen,\n  and any pins can be selected.\n- If \"None\" is selected, there will be no console output on any UART, except\n  for initial output from ROM bootloader. This ROM output can be suppressed by\n  GPIO strapping or EFUSE, refer to chip datasheet for details.\n- On chips with USB peripheral, \"USB CDC\" option redirects output to the\n  CDC port. This option uses the CDC driver in the chip ROM.\n  This option is incompatible with TinyUSB stack.",
+                        "help": "Select where to send console output (through stdout and stderr).\n\n- Default is to use UART0 on pre-defined GPIOs.\n- If \"Custom\" is selected, UART0 or UART1 can be chosen,\n  and any pins can be selected.\n- If \"None\" is selected, there will be no console output on any UART, except\n  for initial output from ROM bootloader. This ROM output can be suppressed by\n  GPIO strapping or EFUSE, refer to chip datasheet for details.\n- On chips with USB OTG peripheral, \"USB CDC\" option redirects output to the\n  CDC port. This option uses the CDC driver in the chip ROM.\n  This option is incompatible with TinyUSB stack.\n- On chips with an USB serial/JTAG debug controller, selecting the option\n  for that redirects output to the CDC/ACM (serial port emulation) component\n  of that device.",
                         "id": "component-config-esp-system-settings-channel-for-console-output",
                         "name": "ESP_CONSOLE_UART",
                         "title": "Channel for console output",
@@ -12522,7 +12261,7 @@
                                 "type": "int"
                             }
                         ],
-                        "depends_on": "FREERTOS_USE_TICKLESS_IDLE",
+                        "depends_on": null,
                         "help": "Select this option to place called Wi-Fi library TBTT process and receive beacon functions in IRAM.\nSome functions can be put in IRAM either by ESP32_WIFI_IRAM_OPT and ESP32_WIFI_RX_IRAM_OPT, or this one.\nIf already enabled ESP32_WIFI_IRAM_OPT, the other 7.3KB IRAM memory would be taken by this option.\nIf already enabled ESP32_WIFI_RX_IRAM_OPT, the other 1.3KB IRAM memory would be taken by this option.\nIf neither of them are enabled, the other 7.4KB IRAM memory would be taken by this option.\nWi-Fi power-save mode average current would be reduced if this option is enabled.",
                         "id": "ESP_WIFI_SLP_IRAM_OPT",
                         "name": "ESP_WIFI_SLP_IRAM_OPT",
@@ -12533,73 +12272,32 @@
                     {
                         "children": [
                             {
-                                "children": [
-                                    {
-                                        "children": [],
-                                        "depends_on": "ESP_WIFI_FTM_REPORT_LOG_ENABLE",
-                                        "help": null,
-                                        "id": "ESP_WIFI_FTM_REPORT_SHOW_RTT",
-                                        "name": "ESP_WIFI_FTM_REPORT_SHOW_RTT",
-                                        "range": null,
-                                        "title": "Show RTT values",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "ESP_WIFI_FTM_REPORT_LOG_ENABLE",
-                                        "help": null,
-                                        "id": "ESP_WIFI_FTM_REPORT_SHOW_DIAG",
-                                        "name": "ESP_WIFI_FTM_REPORT_SHOW_DIAG",
-                                        "range": null,
-                                        "title": "Show dialog tokens",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "ESP_WIFI_FTM_REPORT_LOG_ENABLE",
-                                        "help": null,
-                                        "id": "ESP_WIFI_FTM_REPORT_SHOW_T1T2T3T4",
-                                        "name": "ESP_WIFI_FTM_REPORT_SHOW_T1T2T3T4",
-                                        "range": null,
-                                        "title": "Show T1 to T4",
-                                        "type": "bool"
-                                    },
-                                    {
-                                        "children": [],
-                                        "depends_on": "ESP_WIFI_FTM_REPORT_LOG_ENABLE",
-                                        "help": null,
-                                        "id": "ESP_WIFI_FTM_REPORT_SHOW_RSSI",
-                                        "name": "ESP_WIFI_FTM_REPORT_SHOW_RSSI",
-                                        "range": null,
-                                        "title": "Show RSSI levels",
-                                        "type": "bool"
-                                    }
-                                ],
-                                "depends_on": "ESP_WIFI_FTM_INITIATOR_SUPPORT",
-                                "help": "Select this option to get a detailed report of FTM Procedure with raw values",
-                                "id": "ESP_WIFI_FTM_REPORT_LOG_ENABLE",
-                                "name": "ESP_WIFI_FTM_REPORT_LOG_ENABLE",
+                                "children": [],
+                                "depends_on": "ESP_WIFI_FTM_ENABLE",
+                                "help": null,
+                                "id": "ESP_WIFI_FTM_INITIATOR_SUPPORT",
+                                "name": "ESP_WIFI_FTM_INITIATOR_SUPPORT",
                                 "range": null,
-                                "title": "FTM Report logging",
+                                "title": "FTM Initiator support",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "ESP_WIFI_FTM_ENABLE",
+                                "help": null,
+                                "id": "ESP_WIFI_FTM_RESPONDER_SUPPORT",
+                                "name": "ESP_WIFI_FTM_RESPONDER_SUPPORT",
+                                "range": null,
+                                "title": "FTM Responder support",
                                 "type": "bool"
                             }
                         ],
                         "depends_on": "IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3",
-                        "help": null,
-                        "id": "ESP_WIFI_FTM_INITIATOR_SUPPORT",
-                        "name": "ESP_WIFI_FTM_INITIATOR_SUPPORT",
+                        "help": "Enable feature Fine Timing Measurement for calculating WiFi Round-Trip-Time (RTT).",
+                        "id": "ESP_WIFI_FTM_ENABLE",
+                        "name": "ESP_WIFI_FTM_ENABLE",
                         "range": null,
-                        "title": "FTM Initiator support",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3",
-                        "help": null,
-                        "id": "ESP_WIFI_FTM_RESPONDER_SUPPORT",
-                        "name": "ESP_WIFI_FTM_RESPONDER_SUPPORT",
-                        "range": null,
-                        "title": "FTM Responder support",
+                        "title": "WiFi FTM",
                         "type": "bool"
                     },
                     {
@@ -12616,110 +12314,6 @@
                 "depends_on": null,
                 "id": "component-config-wi-fi",
                 "title": "Wi-Fi",
-                "type": "menu"
-            },
-            {
-                "children": [
-                    {
-                        "children": [],
-                        "depends_on": "IDF_TARGET_ESP32",
-                        "help": "If this option is enabled, NVS will be initialized and calibration data will be loaded from there.\nPHY calibration will be skipped on deep sleep wakeup. If calibration data is not found, full calibration\nwill be performed and stored in NVS. Normally, only partial calibration will be performed.\nIf this option is disabled, full calibration will be performed.\n\nIf it's easy that your board calibrate bad data, choose 'n'.\nTwo cases for example, you should choose 'n':\n1.If your board is easy to be booted up with antenna disconnected.\n2.Because of your board design, each time when you do calibration, the result are too unstable.\nIf unsure, choose 'y'.",
-                        "id": "ESP32_PHY_CALIBRATION_AND_DATA_STORAGE",
-                        "name": "ESP32_PHY_CALIBRATION_AND_DATA_STORAGE",
-                        "range": null,
-                        "title": "Store phy calibration data in NVS",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [
-                            {
-                                "children": [],
-                                "depends_on": "ESP32_PHY_INIT_DATA_IN_PARTITION",
-                                "help": "If enabled, PHY init data will be restored to default if\nit cannot be verified successfully to avoid endless bootloops.\n\nIf unsure, choose 'n'.",
-                                "id": "ESP32_PHY_DEFAULT_INIT_IF_INVALID",
-                                "name": "ESP32_PHY_DEFAULT_INIT_IF_INVALID",
-                                "range": null,
-                                "title": "Reset default PHY init data if invalid",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [
-                                    {
-                                        "children": [],
-                                        "depends_on": "ESP32_SUPPORT_MULTIPLE_PHY_INIT_DATA_BIN && ESP32_PHY_INIT_DATA_IN_PARTITION",
-                                        "help": "If enabled, when an error occurs while the PHY init data is updated,\nthe program will terminate and restart.\nIf not enabled, the PHY init data will not be updated when an error occurs.",
-                                        "id": "ESP32_PHY_INIT_DATA_ERROR",
-                                        "name": "ESP32_PHY_INIT_DATA_ERROR",
-                                        "range": null,
-                                        "title": "Terminate operation when PHY init data error",
-                                        "type": "bool"
-                                    }
-                                ],
-                                "depends_on": "ESP32_PHY_INIT_DATA_IN_PARTITION && ESP32_PHY_INIT_DATA_IN_PARTITION",
-                                "help": "If enabled, the corresponding PHY init data type can be automatically switched\naccording to the country code. China's PHY init data bin is used by default.\nCan be modified by country information in API esp_wifi_set_country().\nThe priority of switching the PHY init data type is:\n1. Country configured by API esp_wifi_set_country()\nand the parameter policy is WIFI_COUNTRY_POLICY_MANUAL.\n2. Country notified by the connected AP.\n3. Country configured by API esp_wifi_set_country()\nand the parameter policy is WIFI_COUNTRY_POLICY_AUTO.",
-                                "id": "ESP32_SUPPORT_MULTIPLE_PHY_INIT_DATA_BIN",
-                                "name": "ESP32_SUPPORT_MULTIPLE_PHY_INIT_DATA_BIN",
-                                "range": null,
-                                "title": "Support multiple PHY init data bin",
-                                "type": "bool"
-                            }
-                        ],
-                        "depends_on": null,
-                        "help": "If enabled, PHY init data will be loaded from a partition.\nWhen using a custom partition table, make sure that PHY data\npartition is included (type: 'data', subtype: 'phy').\nWith default partition tables, this is done automatically.\nIf PHY init data is stored in a partition, it has to be flashed there,\notherwise runtime error will occur.\n\nIf this option is not enabled, PHY init data will be embedded\ninto the application binary.\n\nIf unsure, choose 'n'.",
-                        "id": "ESP32_PHY_INIT_DATA_IN_PARTITION",
-                        "is_menuconfig": true,
-                        "name": "ESP32_PHY_INIT_DATA_IN_PARTITION",
-                        "range": null,
-                        "title": "Use a partition to store PHY init data",
-                        "type": "menu"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": "Set maximum transmit power for WiFi radio. Actual transmit power for high\ndata rates may be lower than this setting.",
-                        "id": "ESP32_PHY_MAX_WIFI_TX_POWER",
-                        "name": "ESP32_PHY_MAX_WIFI_TX_POWER",
-                        "range": [
-                            10,
-                            20
-                        ],
-                        "title": "Max WiFi TX power (dBm)",
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": null,
-                        "help": null,
-                        "id": "ESP32_PHY_MAX_TX_POWER",
-                        "name": "ESP32_PHY_MAX_TX_POWER",
-                        "range": null,
-                        "title": null,
-                        "type": "int"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "IDF_TARGET_ESP32C3 && FREERTOS_USE_TICKLESS_IDLE",
-                        "help": "If enabled, the MAC and baseband of Wi-Fi and Bluetooth will be powered\ndown when PHY is disabled. Enabling this setting reduces power consumption\nby a small amount but increases RAM use by approximately 4 KB(Wi-Fi only),\n2 KB(Bluetooth only) or 5.3 KB(Wi-Fi + Bluetooth).\n\n#Reduce PHY TX power when brownout reset",
-                        "id": "ESP32_PHY_MAC_BB_PD",
-                        "name": "ESP32_PHY_MAC_BB_PD",
-                        "range": null,
-                        "title": "Power down MAC and baseband of Wi-Fi and Bluetooth when PHY is disabled",
-                        "type": "bool"
-                    },
-                    {
-                        "children": [],
-                        "depends_on": "ESP32_BROWNOUT_DET",
-                        "help": "When brownout reset occurs, reduce PHY TX power to keep the code running.",
-                        "id": "ESP32_REDUCE_PHY_TX_POWER",
-                        "name": "ESP32_REDUCE_PHY_TX_POWER",
-                        "range": null,
-                        "title": "Reduce PHY TX power when brownout reset",
-                        "type": "bool"
-                    }
-                ],
-                "depends_on": null,
-                "id": "component-config-phy",
-                "title": "PHY",
                 "type": "menu"
             },
             {
@@ -12826,6 +12420,16 @@
                     },
                     {
                         "children": [],
+                        "depends_on": "ESP_COREDUMP_ENABLE_TO_FLASH",
+                        "help": "When enabled, if any data are found on the flash core dump partition,\nthey will be checked by calculating their checksum.",
+                        "id": "ESP_COREDUMP_CHECK_BOOT",
+                        "name": "ESP_COREDUMP_CHECK_BOOT",
+                        "range": null,
+                        "title": "Check core dump data integrity on boot",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
                         "depends_on": null,
                         "help": "Enables/disable core dump module.",
                         "id": "ESP_COREDUMP_ENABLE",
@@ -12862,6 +12466,16 @@
                         "name": "ESP_COREDUMP_STACK_SIZE",
                         "range": null,
                         "title": "Reserved stack size",
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "ESP_COREDUMP_DATA_FORMAT_ELF && ESP_COREDUMP_ENABLE_TO_FLASH && IDF_TARGET_ARCH_RISCV",
+                        "help": "Size of the buffer that would be reserved for extracting backtrace info summary.\nThis buffer will contain the stack dump of the crashed task. This dump is useful in generating backtrace",
+                        "id": "ESP_COREDUMP_SUMMARY_STACKDUMP_SIZE",
+                        "name": "ESP_COREDUMP_SUMMARY_STACKDUMP_SIZE",
+                        "range": null,
+                        "title": "Size of the stack dump buffer",
                         "type": "int"
                     },
                     {
@@ -13483,7 +13097,7 @@
                         "name": "FMB_PORT_TASK_PRIO",
                         "range": [
                             3,
-                            10
+                            23
                         ],
                         "title": "Modbus port task priority",
                         "type": "int"
@@ -14101,6 +13715,74 @@
                         "children": [
                             {
                                 "children": [],
+                                "depends_on": "<choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_EQUALS_SYSTEM",
+                                "name": "HAL_ASSERTION_EQUALS_SYSTEM",
+                                "range": null,
+                                "title": "Same as system assertion level",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL >= 0 && <choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_DISABLE",
+                                "name": "HAL_ASSERTION_DISABLE",
+                                "range": null,
+                                "title": "Disabled",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL >= 1 && <choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_SILIENT",
+                                "name": "HAL_ASSERTION_SILIENT",
+                                "range": null,
+                                "title": "Silent",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL >= 2 && <choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_ENABLE",
+                                "name": "HAL_ASSERTION_ENABLE",
+                                "range": null,
+                                "title": "Enabled",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Set the assert behavior / level for HAL component.\nHAL component assert level can be set separately,\nbut the level can't exceed the system assertion level.\ne.g. If the system assertion is disabled, then the HAL\nassertion can't be enabled either. If the system assertion\nis enable, then the HAL assertion can still be disabled\nby this Kconfig option.",
+                        "id": "component-config-hardware-abstraction-layer-hal-and-low-level-ll--default-hal-assertion-level",
+                        "name": "HAL_DEFAULT_ASSERTION_LEVEL",
+                        "title": "Default HAL assertion level",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "HAL_DEFAULT_ASSERTION_LEVEL",
+                        "name": "HAL_DEFAULT_ASSERTION_LEVEL",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-hardware-abstraction-layer-hal-and-low-level-ll-",
+                "title": "Hardware Abstraction Layer (HAL) and Low Level (LL)",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
                                 "depends_on": "<choice HEAP_CORRUPTION_DETECTION>",
                                 "help": null,
                                 "id": "HEAP_POISONING_DISABLED",
@@ -14335,7 +14017,7 @@
                             }
                         ],
                         "depends_on": null,
-                        "help": "Specify how much output to see in logs by default.\nYou can set lower verbosity level at runtime using\nesp_log_level_set function.\n\nNote that this setting limits which log statements\nare compiled into the program. So setting this to, say,\n\"Warning\" would mean that changing log level to \"Debug\"\nat runtime will not be possible.",
+                        "help": "Specify how much output to see in logs by default.\nYou can set lower verbosity level at runtime using\nesp_log_level_set function.\n\nBy default, this setting limits which log statements\nare compiled into the program. For example, selecting\n\"Warning\" would mean that changing log level to \"Debug\"\nat runtime will not be possible. To allow increasing log\nlevel above the default at runtime, see the next option.",
                         "id": "component-config-log-output-default-log-verbosity",
                         "name": "LOG_DEFAULT_LEVEL",
                         "title": "Default log verbosity",
@@ -14347,6 +14029,86 @@
                         "help": null,
                         "id": "LOG_DEFAULT_LEVEL",
                         "name": "LOG_DEFAULT_LEVEL",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_EQUALS_DEFAULT",
+                                "name": "LOG_MAXIMUM_EQUALS_DEFAULT",
+                                "range": null,
+                                "title": "Same as default",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 1 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_ERROR",
+                                "name": "LOG_MAXIMUM_LEVEL_ERROR",
+                                "range": null,
+                                "title": "Error",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 2 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_WARN",
+                                "name": "LOG_MAXIMUM_LEVEL_WARN",
+                                "range": null,
+                                "title": "Warning",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 3 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_INFO",
+                                "name": "LOG_MAXIMUM_LEVEL_INFO",
+                                "range": null,
+                                "title": "Info",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 4 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_DEBUG",
+                                "name": "LOG_MAXIMUM_LEVEL_DEBUG",
+                                "range": null,
+                                "title": "Debug",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 5 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_VERBOSE",
+                                "name": "LOG_MAXIMUM_LEVEL_VERBOSE",
+                                "range": null,
+                                "title": "Verbose",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "This config option sets the highest log verbosity that it's possible to select\nat runtime by calling esp_log_level_set(). This level may be higher than\nthe default verbosity level which is set when the app starts up.\n\nThis can be used enable debugging output only at a critical point, for a particular\ntag, or to minimize startup time but then enable more logs once the firmware has\nloaded.\n\nNote that increasing the maximum available log level will increase the firmware\nbinary size.\n\nThis option only applies to logging from the app, the bootloader log level is\nfixed at compile time to the separate \"Bootloader log verbosity\" setting.",
+                        "id": "component-config-log-output-maximum-log-verbosity",
+                        "name": "LOG_MAXIMUM_LEVEL",
+                        "title": "Maximum log verbosity",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "LOG_MAXIMUM_LEVEL",
+                        "name": "LOG_MAXIMUM_LEVEL",
                         "range": null,
                         "title": null,
                         "type": "int"
@@ -14661,6 +14423,16 @@
                     {
                         "children": [],
                         "depends_on": null,
+                        "help": "This option could be used to disable DHCP client identification with its MAC address.\n(Client id is used by DHCP servers to uniquely identify clients and are included\nin the DHCP packets as an option 61)\nSet this option to \"y\" in order to exclude option 61 from DHCP packets.",
+                        "id": "LWIP_DHCP_DISABLE_CLIENT_ID",
+                        "name": "LWIP_DHCP_DISABLE_CLIENT_ID",
+                        "range": null,
+                        "title": "DHCP: Disable Use of HW address as client identification",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
                         "help": "When this option is enabled, DHCP client tries to re-obtain last valid IP address obtained from DHCP\nserver. Last valid DHCP configuration is stored in nvs and restored after reset/power-up. If IP is still\navailable, there is no need for sending discovery message to DHCP server and save some time.",
                         "id": "LWIP_DHCP_RESTORE_LAST_IP",
                         "name": "LWIP_DHCP_RESTORE_LAST_IP",
@@ -14671,30 +14443,41 @@
                     {
                         "children": [
                             {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "The DHCP server is calculating lease time multiplying the sent\nand received times by this number of seconds per unit.\nThe default is 60, that equals one minute.",
-                                "id": "LWIP_DHCPS_LEASE_UNIT",
-                                "name": "LWIP_DHCPS_LEASE_UNIT",
-                                "range": [
-                                    1,
-                                    3600
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "LWIP_DHCPS",
+                                        "help": "The DHCP server is calculating lease time multiplying the sent\nand received times by this number of seconds per unit.\nThe default is 60, that equals one minute.",
+                                        "id": "LWIP_DHCPS_LEASE_UNIT",
+                                        "name": "LWIP_DHCPS_LEASE_UNIT",
+                                        "range": [
+                                            1,
+                                            3600
+                                        ],
+                                        "title": "Multiplier for lease time, in seconds",
+                                        "type": "int"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "LWIP_DHCPS",
+                                        "help": "The maximum number of DHCP clients that are connected to the server.\nAfter this number is exceeded, DHCP server removes of the oldest device\nfrom it's address pool, without notification.",
+                                        "id": "LWIP_DHCPS_MAX_STATION_NUM",
+                                        "name": "LWIP_DHCPS_MAX_STATION_NUM",
+                                        "range": [
+                                            1,
+                                            64
+                                        ],
+                                        "title": "Maximum number of stations",
+                                        "type": "int"
+                                    }
                                 ],
-                                "title": "Multiplier for lease time, in seconds",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
                                 "depends_on": null,
-                                "help": "The maximum number of DHCP clients that are connected to the server.\nAfter this number is exceeded, DHCP server removes of the oldest device\nfrom it's address pool, without notification.",
-                                "id": "LWIP_DHCPS_MAX_STATION_NUM",
-                                "name": "LWIP_DHCPS_MAX_STATION_NUM",
-                                "range": [
-                                    1,
-                                    64
-                                ],
-                                "title": "Maximum number of stations",
-                                "type": "int"
+                                "help": "Enabling this option allows the device to run the DHCP server\n(to dynamically assign IPv4 addresses to clients).",
+                                "id": "LWIP_DHCPS",
+                                "name": "LWIP_DHCPS",
+                                "range": null,
+                                "title": "DHCPS: Enable IPv4 Dynamic Host Configuration Protocol Server (DHCPS)",
+                                "type": "bool"
                             }
                         ],
                         "depends_on": null,
@@ -14755,14 +14538,54 @@
                                 "range": null,
                                 "title": "Enable IPV6 stateless address autoconfiguration (SLAAC)",
                                 "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_IPV6",
+                                "help": "The maximum number of IPv6 addresses on each interface. Any additional\naddresses will be discarded.",
+                                "id": "LWIP_IPV6_NUM_ADDRESSES",
+                                "name": "LWIP_IPV6_NUM_ADDRESSES",
+                                "range": null,
+                                "title": "Number of IPv6 addresses on each network interface",
+                                "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_IPV6",
+                                "help": "Forwarding IPv6 packets between interfaces is only required when acting as\na router.",
+                                "id": "LWIP_IPV6_FORWARD",
+                                "name": "LWIP_IPV6_FORWARD",
+                                "range": null,
+                                "title": "Enable IPv6 forwarding between interfaces",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_IPV6",
+                                "help": "Use IPv6 Router Advertisement Recursive DNS Server Option (as per RFC 6106) to\ncopy a defined maximum number of DNS servers to the DNS module.\nSet this option to a number of desired DNS servers advertised in the RA protocol.\nThis feature is disabled when set to 0.",
+                                "id": "LWIP_IPV6_RDNSS_MAX_DNS_SERVERS",
+                                "name": "LWIP_IPV6_RDNSS_MAX_DNS_SERVERS",
+                                "range": null,
+                                "title": "Use IPv6 Router Advertisement Recursive DNS Server Option",
+                                "type": "int"
                             }
                         ],
                         "depends_on": null,
-                        "help": "Enable IPv6 function. If not use IPv6 function, set this option to n.\nIf disable LWIP_IPV6, not adding coap and asio component into the build.\nPlease assign them to EXCLUDE_COMPONENTS in the make or cmake file in your\nproject directory, so that the component will not be compiled.",
+                        "help": "Enable IPv6 function. If not use IPv6 function, set this option to n.\nIf disabling LWIP_IPV6 then some other components (coap and asio) will\nno longer be available.",
                         "id": "LWIP_IPV6",
                         "name": "LWIP_IPV6",
                         "range": null,
                         "title": "Enable IPv6",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Enable callbacks when the network interface is up/down and addresses are changed.",
+                        "id": "LWIP_NETIF_STATUS_CALLBACK",
+                        "name": "LWIP_NETIF_STATUS_CALLBACK",
+                        "range": null,
+                        "title": "Enable status callback for network interfaces",
                         "type": "bool"
                     },
                     {
@@ -15334,6 +15157,16 @@
                             {
                                 "children": [],
                                 "depends_on": null,
+                                "help": "Enable ICMP module for check network stability",
+                                "id": "LWIP_ICMP",
+                                "name": "LWIP_ICMP",
+                                "range": null,
+                                "title": "ICMP: Enable ICMP",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LWIP_ICMP6 || LWIP_ICMP",
                                 "help": null,
                                 "id": "LWIP_MULTICAST_PING",
                                 "name": "LWIP_MULTICAST_PING",
@@ -15343,7 +15176,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": null,
+                                "depends_on": "LWIP_ICMP",
                                 "help": null,
                                 "id": "LWIP_BROADCAST_PING",
                                 "name": "LWIP_BROADCAST_PING",
@@ -15508,6 +15341,46 @@
                                 "children": [
                                     {
                                         "children": [],
+                                        "depends_on": "<choice LWIP_HOOK_ND6_GET_GW>",
+                                        "help": null,
+                                        "id": "LWIP_HOOK_ND6_GET_GW_NONE",
+                                        "name": "LWIP_HOOK_ND6_GET_GW_NONE",
+                                        "range": null,
+                                        "title": "No hook declared",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice LWIP_HOOK_ND6_GET_GW>",
+                                        "help": null,
+                                        "id": "LWIP_HOOK_ND6_GET_GW_DEFAULT",
+                                        "name": "LWIP_HOOK_ND6_GET_GW_DEFAULT",
+                                        "range": null,
+                                        "title": "Default (weak) implementation",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice LWIP_HOOK_ND6_GET_GW>",
+                                        "help": null,
+                                        "id": "LWIP_HOOK_ND6_GET_GW_CUSTOM",
+                                        "name": "LWIP_HOOK_ND6_GET_GW_CUSTOM",
+                                        "range": null,
+                                        "title": "Custom implementation",
+                                        "type": "bool"
+                                    }
+                                ],
+                                "depends_on": "LWIP_IPV6",
+                                "help": "Enables custom IPv6 route hook.\nSetting this to \"default\" provides weak implementation\nstub that could be overwritten in application code.\nSetting this to \"custom\" provides hook's declaration\nonly and expects the application to implement it.",
+                                "id": "component-config-lwip-hooks-ipv6-get-gateway-hook",
+                                "name": "LWIP_HOOK_ND6_GET_GW",
+                                "title": "IPv6 get gateway Hook",
+                                "type": "choice"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
                                         "depends_on": "<choice LWIP_HOOK_NETCONN_EXTERNAL_RESOLVE>",
                                         "help": null,
                                         "id": "LWIP_HOOK_NETCONN_EXT_RESOLVE_NONE",
@@ -15614,7 +15487,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "LWIP_DEBUG",
+                                "depends_on": "LWIP_DEBUG && LWIP_ICMP",
                                 "help": null,
                                 "id": "LWIP_ICMP_DEBUG",
                                 "name": "LWIP_ICMP_DEBUG",
@@ -15674,7 +15547,7 @@
                             }
                         ],
                         "depends_on": null,
-                        "help": null,
+                        "help": "Enabling this option allows different kinds of lwIP debug output.\n\nAll lwIP debug features increase the size of the final binary.",
                         "id": "LWIP_DEBUG",
                         "is_menuconfig": true,
                         "name": "LWIP_DEBUG",
@@ -15704,7 +15577,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "ESP32_SPIRAM_SUPPORT && <choice MBEDTLS_MEM_ALLOC_MODE>",
+                                "depends_on": "(SPIRAM_USE_CAPS_ALLOC || SPIRAM_USE_MALLOC) && <choice MBEDTLS_MEM_ALLOC_MODE>",
                                 "help": null,
                                 "id": "MBEDTLS_EXTERNAL_MEM_ALLOC",
                                 "name": "MBEDTLS_EXTERNAL_MEM_ALLOC",
@@ -15744,7 +15617,7 @@
                             }
                         ],
                         "depends_on": null,
-                        "help": "Allocation strategy for mbedTLS, essentially provides ability to\nallocate all required dynamic allocations from,\n\n- Internal DRAM memory only\n- External SPIRAM memory only\n- Either internal or external memory based on default malloc()\n  behavior in ESP-IDF\n- Custom allocation mode, by overwriting calloc()/free() using\n  mbedtls_platform_set_calloc_free() function\n- Internal IRAM memory wherever applicable else internal DRAM\n\nRecommended mode here is always internal, since that is most preferred\nfrom security perspective. But if application requirement does not\nallow sufficient free internal memory then alternate mode can be\nselected.",
+                        "help": "Allocation strategy for mbedTLS, essentially provides ability to\nallocate all required dynamic allocations from,\n\n- Internal DRAM memory only\n- External SPIRAM memory only\n- Either internal or external memory based on default malloc()\n  behavior in ESP-IDF\n- Custom allocation mode, by overwriting calloc()/free() using\n  mbedtls_platform_set_calloc_free() function\n- Internal IRAM memory wherever applicable else internal DRAM\n\nRecommended mode here is always internal (*), since that is most preferred\nfrom security perspective. But if application requirement does not\nallow sufficient free internal memory then alternate mode can be\nselected.\n\n(*) In case of ESP32-S2/ESP32-S3, hardware allows encryption of external\nSPIRAM contents provided hardware flash encryption feature is enabled.\nIn that case, using external SPIRAM allocation strategy is also safe choice\nfrom security perspective.",
                         "id": "component-config-mbedtls-memory-allocation-strategy",
                         "name": "MBEDTLS_MEM_ALLOC_MODE",
                         "title": "Memory allocation strategy",
@@ -16002,7 +15875,7 @@
                     },
                     {
                         "children": [],
-                        "depends_on": null,
+                        "depends_on": "MBEDTLS_AES_C || MBEDTLS_DES_C",
                         "help": "Enable the CMAC (Cipher-based Message Authentication Code) mode for\nblock ciphers.",
                         "id": "MBEDTLS_CMAC_C",
                         "name": "MBEDTLS_CMAC_C",
@@ -16014,7 +15887,7 @@
                         "children": [
                             {
                                 "children": [],
-                                "depends_on": "IDF_TARGET_ESP32S2 && MBEDTLS_HARDWARE_AES",
+                                "depends_on": "!IDF_TARGET_ESP32 && MBEDTLS_HARDWARE_AES",
                                 "help": "Use an interrupt to coordinate long AES operations.\n\nThis allows other code to run on the CPU while an AES operation is pending.\nOtherwise the CPU busy-waits.",
                                 "id": "MBEDTLS_AES_USE_INTERRUPT",
                                 "name": "MBEDTLS_AES_USE_INTERRUPT",
@@ -16059,6 +15932,16 @@
                         "name": "MBEDTLS_HARDWARE_SHA",
                         "range": null,
                         "title": "Enable hardware SHA acceleration",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Use ROM MD5 in mbedTLS.",
+                        "id": "MBEDTLS_ROM_MD5",
+                        "name": "MBEDTLS_ROM_MD5",
+                        "range": null,
+                        "title": "Use MD5 implementation in ROM",
                         "type": "bool"
                     },
                     {
@@ -16542,6 +16425,16 @@
                                 "name": "MBEDTLS_GCM_C",
                                 "range": null,
                                 "title": "GCM (Galois/Counter) block cipher modes",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "MBEDTLS_AES_C",
+                                "help": "Enable NIST key wrapping and key wrapping padding.",
+                                "id": "MBEDTLS_NIST_KW_C",
+                                "name": "MBEDTLS_NIST_KW_C",
+                                "range": null,
+                                "title": "NIST key wrapping (KW) and KW padding (KWP)",
                                 "type": "bool"
                             }
                         ],
@@ -17056,7 +16949,7 @@
                                 "type": "bool"
                             }
                         ],
-                        "depends_on": null,
+                        "depends_on": "WS_TRANSPORT",
                         "help": "Enable MQTT transport over Websocket.",
                         "id": "MQTT_TRANSPORT_WEBSOCKET",
                         "name": "MQTT_TRANSPORT_WEBSOCKET",
@@ -17553,12 +17446,42 @@
                             {
                                 "children": [],
                                 "depends_on": "OPENTHREAD_ENABLED",
+                                "help": "Select this option to enable border router features in OpenThread.",
+                                "id": "OPENTHREAD_BORDER_ROUTER",
+                                "name": "OPENTHREAD_BORDER_ROUTER",
+                                "range": null,
+                                "title": "Enable Border Router",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "OPENTHREAD_ENABLED",
                                 "help": "The storage size should be at least 8192 bytes.",
                                 "id": "OPENTHREAD_PARTITION_NAME",
                                 "name": "OPENTHREAD_PARTITION_NAME",
                                 "range": null,
                                 "title": "The partition for OpenThread to store its network data",
                                 "type": "string"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "OPENTHREAD_ENABLED",
+                                "help": "The size of the packet queue for OpenThread lwIP network interface.",
+                                "id": "OPENTHREAD_NETIF_QUEUE_SIZE",
+                                "name": "OPENTHREAD_NETIF_QUEUE_SIZE",
+                                "range": null,
+                                "title": "The size of the packet queue for OpenThread lwIP network interface",
+                                "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "OPENTHREAD_ENABLED",
+                                "help": "The size of the OpenThread task queue.",
+                                "id": "OPENTHREAD_TASK_QUEUE_SIZE",
+                                "name": "OPENTHREAD_TASK_QUEUE_SIZE",
+                                "range": null,
+                                "title": "The size of the OpenThread task queue",
+                                "type": "int"
                             }
                         ],
                         "depends_on": null,
@@ -17881,6 +17804,16 @@
                         "name": "SPI_FLASH_CHECK_ERASE_TIMEOUT_DISABLED",
                         "range": null,
                         "title": "Flash timeout checkout disabled",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "!SPI_FLASH_USE_LEGACY_IMPL",
+                        "help": "This option allows the chip driver list to be customized, instead of using the default list provided by\nESP-IDF.\n\nWhen this option is enabled, the default list is no longer compiled or linked. Instead, the\n`default_registered_chips` structure must be provided by the user.\n\nSee example: custom_chip_driver under examples/storage for more details.",
+                        "id": "SPI_FLASH_OVERRIDE_CHIP_DRIVER_LIST",
+                        "name": "SPI_FLASH_OVERRIDE_CHIP_DRIVER_LIST",
+                        "range": null,
+                        "title": "Override default chip driver list",
                         "type": "bool"
                     },
                     {
@@ -18208,14 +18141,33 @@
             {
                 "children": [
                     {
-                        "children": [],
+                        "children": [
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "WS_TRANSPORT",
+                                        "help": "Size of the buffer used for constructing the HTTP Upgrade request during connect",
+                                        "id": "WS_BUFFER_SIZE",
+                                        "name": "WS_BUFFER_SIZE",
+                                        "range": null,
+                                        "title": "Websocket transport buffer size",
+                                        "type": "int"
+                                    }
+                                ],
+                                "depends_on": null,
+                                "help": "Enable support for creating websocket transport.",
+                                "id": "WS_TRANSPORT",
+                                "name": "WS_TRANSPORT",
+                                "range": null,
+                                "title": "Enable Websocket Transport",
+                                "type": "bool"
+                            }
+                        ],
                         "depends_on": null,
-                        "help": "Size of the buffer used for constructing the HTTP Upgrade request during connect",
-                        "id": "WS_BUFFER_SIZE",
-                        "name": "WS_BUFFER_SIZE",
-                        "range": null,
-                        "title": "Websocket transport buffer size",
-                        "type": "int"
+                        "id": "component-config-tcp-transport-websocket",
+                        "title": "Websocket",
+                        "type": "menu"
                     }
                 ],
                 "depends_on": null,
@@ -18436,7 +18388,7 @@
                                 "type": "int"
                             }
                         ],
-                        "depends_on": "IDF_TARGET_ESP32S2",
+                        "depends_on": "IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3",
                         "help": "Adds support for TinyUSB",
                         "id": "USB_ENABLED",
                         "name": "USB_ENABLED",
@@ -18470,6 +18422,16 @@
                         "name": "UNITY_ENABLE_DOUBLE",
                         "range": null,
                         "title": "Support for double type",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "If not set, assertions on 64-bit integer types will always fail.\nIf this feature is enabled, take care not to pass pointers (which are 32 bit)\nto UNITY_ASSERT_EQUAL, as that will cause pointer-to-int-cast warnings.",
+                        "id": "UNITY_ENABLE_64BIT",
+                        "name": "UNITY_ENABLE_64BIT",
+                        "range": null,
+                        "title": "Support for 64-bit integer types",
                         "type": "bool"
                     },
                     {
@@ -18733,11 +18695,11 @@
                     {
                         "children": [],
                         "depends_on": null,
-                        "help": "Select this option to use MbedTLS crypto API's which utilize hardware acceleration.",
+                        "help": "Select this option to use MbedTLS crypto APIs which utilize hardware acceleration.",
                         "id": "WPA_MBEDTLS_CRYPTO",
                         "name": "WPA_MBEDTLS_CRYPTO",
                         "range": null,
-                        "title": "Use MbedTLS crypto API's",
+                        "title": "Use MbedTLS crypto APIs",
                         "type": "bool"
                     },
                     {

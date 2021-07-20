@@ -1,4 +1,4 @@
-# Install script for directory: /home/saehi/Desktop/ESP/esp32-C3/esp-idf/components/mbedtls/mbedtls
+# Install script for directory: /home/seahi/Desktop/ESP/ESP32/esp-idf/components/mbedtls/mbedtls
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,8 +34,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/saehi/Desktop/ESP/esp32-C3/WS2812_Device/ESP32-C3ControuWs2812/build/esp-idf/mbedtls/mbedtls/library/cmake_install.cmake")
-  include("/home/saehi/Desktop/ESP/esp32-C3/WS2812_Device/ESP32-C3ControuWs2812/build/esp-idf/mbedtls/mbedtls/include/cmake_install.cmake")
+  include("/home/seahi/Desktop/ESP/project/esp32/ESP32Controu2812_Demo/build/esp-idf/mbedtls/mbedtls/library/cmake_install.cmake")
+  include("/home/seahi/Desktop/ESP/project/esp32/ESP32Controu2812_Demo/build/esp-idf/mbedtls/mbedtls/include/cmake_install.cmake")
 
 endif()
 

@@ -1,4 +1,4 @@
-# Install script for directory: /home/saehi/Desktop/ESP/esp32-C3/esp-idf/components/nghttp
+# Install script for directory: /home/seahi/Desktop/ESP/ESP32/esp-idf/components/nghttp
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

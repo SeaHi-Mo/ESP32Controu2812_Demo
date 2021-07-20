@@ -80,31 +80,21 @@
         "type": "bool"
     },
     {
-        "children": [
-            {
-                "children": [],
-                "depends_on": "<choice IDF_TARGET_ESP32S3_BETA_VERSION>",
-                "help": null,
-                "id": "IDF_TARGET_ESP32S3_BETA_VERSION_3",
-                "name": "IDF_TARGET_ESP32S3_BETA_VERSION_3",
-                "range": null,
-                "title": "ESP32-S3 beta3",
-                "type": "bool"
-            }
-        ],
-        "depends_on": "IDF_TARGET_ESP32S3",
-        "help": "Currently ESP32-S3 has several beta versions for internal use only.\nSelect the one that matches your chip model.",
-        "id": "esp32-s3-beta-version",
-        "name": "IDF_TARGET_ESP32S3_BETA_VERSION",
-        "title": "ESP32-S3 beta version",
-        "type": "choice"
-    },
-    {
         "children": [],
         "depends_on": null,
         "help": null,
         "id": "IDF_TARGET_ESP32C3",
         "name": "IDF_TARGET_ESP32C3",
+        "range": null,
+        "title": null,
+        "type": "bool"
+    },
+    {
+        "children": [],
+        "depends_on": null,
+        "help": null,
+        "id": "IDF_TARGET_LINUX",
+        "name": "IDF_TARGET_LINUX",
         "range": null,
         "title": null,
         "type": "bool"
@@ -193,7 +183,7 @@
                     }
                 ],
                 "depends_on": null,
-                "help": "Select the way the application is built.\n\nBy default, the application is built as a binary file in a format compatible with\nthe ESP-IDF bootloader. In addition to this application, 2nd stage bootloader is\nalso built. Application and bootloader binaries can be written into flash and\nloaded/executed from there.\n\nAnother option, useful for only very small and limited applications, is to only link\nthe .elf file of the application, such that it can be loaded directly into RAM over\nJTAG. Note that since IRAM and DRAM sizes are very limited, it is not possible to\nbuild any complex application this way. However for kinds of testing and debugging,\nthis option may provide faster iterations, since the application does not need to be\nwritten into flash.\nNote that at the moment, ESP-IDF does not contain all the startup code required to\ninitialize the CPUs and ROM memory (data/bss). Therefore it is necessary to execute\na bit of ROM code prior to executing the application. A gdbinit file may look as follows (for ESP32):\n\n    # Connect to a running instance of OpenOCD\n    target remote :3333\n    # Reset and halt the target\n    mon reset halt\n    # Run to a specific point in ROM code,\n    #  where most of initialization is complete.\n    thb *0x40007901\n    c\n    # Load the application into RAM\n    load\n    # Run till app_main\n    tb app_main\n    c\n\nExecute this gdbinit file as follows:\n\n    xtensa-esp32-elf-gdb build/app-name.elf -x gdbinit\n\nExample gdbinit files for other targets can be found in tools/test_apps/system/gdb_loadable_elf/\n\nRecommended sdkconfig.defaults for building loadable ELF files is as follows.\nCONFIG_APP_BUILD_TYPE_ELF_RAM is required, other options help reduce application\nmemory footprint.\n\n    CONFIG_APP_BUILD_TYPE_ELF_RAM=y\n    CONFIG_VFS_SUPPORT_TERMIOS=\n    CONFIG_NEWLIB_NANO_FORMAT=y\n    CONFIG_ESP_SYSTEM_PANIC_PRINT_HALT=y\n    CONFIG_ESP_DEBUG_STUBS_ENABLE=\n    CONFIG_ESP_ERR_TO_NAME_LOOKUP=",
+                "help": "Select the way the application is built.\n\nBy default, the application is built as a binary file in a format compatible with\nthe ESP-IDF bootloader. In addition to this application, 2nd stage bootloader is\nalso built. Application and bootloader binaries can be written into flash and\nloaded/executed from there.\n\nAnother option, useful for only very small and limited applications, is to only link\nthe .elf file of the application, such that it can be loaded directly into RAM over\nJTAG. Note that since IRAM and DRAM sizes are very limited, it is not possible to\nbuild any complex application this way. However for kinds of testing and debugging,\nthis option may provide faster iterations, since the application does not need to be\nwritten into flash.\nNote that at the moment, ESP-IDF does not contain all the startup code required to\ninitialize the CPUs and ROM memory (data/bss). Therefore it is necessary to execute\na bit of ROM code prior to executing the application. A gdbinit file may look as follows (for ESP32):\n\n    # Connect to a running instance of OpenOCD\n    target remote :3333\n    # Reset and halt the target\n    mon reset halt\n    # Run to a specific point in ROM code,\n    #  where most of initialization is complete.\n    thb *0x40007d54\n    c\n    # Load the application into RAM\n    load\n    # Run till app_main\n    tb app_main\n    c\n\nExecute this gdbinit file as follows:\n\n    xtensa-esp32-elf-gdb build/app-name.elf -x gdbinit\n\nExample gdbinit files for other targets can be found in tools/test_apps/system/gdb_loadable_elf/\n\nRecommended sdkconfig.defaults for building loadable ELF files is as follows.\nCONFIG_APP_BUILD_TYPE_ELF_RAM is required, other options help reduce application\nmemory footprint.\n\n    CONFIG_APP_BUILD_TYPE_ELF_RAM=y\n    CONFIG_VFS_SUPPORT_TERMIOS=\n    CONFIG_NEWLIB_NANO_FORMAT=y\n    CONFIG_ESP_SYSTEM_PANIC_PRINT_HALT=y\n    CONFIG_ESP_DEBUG_STUBS_ENABLE=\n    CONFIG_ESP_ERR_TO_NAME_LOOKUP=",
                 "id": "build-type-application-build-type",
                 "name": "APP_BUILD_TYPE",
                 "title": "Application build type",
@@ -560,7 +550,7 @@
                             {
                                 "children": [],
                                 "depends_on": "BOOTLOADER_APP_ANTI_ROLLBACK",
-                                "help": "This option allow emulate read/write operations with efuse secure version.\nIt allow to test anti-rollback implemention without permanent write eFuse bits.\nIn partition table should be exist this partition `emul_efuse, data, 5, , 0x2000`.",
+                                "help": "This option allows to emulate read/write operations with all eFuses and efuse secure version.\nIt allows to test anti-rollback implemention without permanent write eFuse bits.\nThere should be an entry in partition table with following details: `emul_efuse, data, efuse, , 0x2000`.\n\nThis option enables: EFUSE_VIRTUAL and EFUSE_VIRTUAL_KEEP_IN_FLASH.",
                                 "id": "BOOTLOADER_EFUSE_SECURE_VERSION_EMULATE",
                                 "name": "BOOTLOADER_EFUSE_SECURE_VERSION_EMULATE",
                                 "range": null,
@@ -931,7 +921,7 @@
                                 "type": "bool"
                             }
                         ],
-                        "depends_on": "IDF_TARGET_ESP32S2 && SECURE_FLASH_ENC_ENABLED",
+                        "depends_on": "(IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3) && SECURE_FLASH_ENC_ENABLED",
                         "help": "Size of generated AES-XTS key.\n\nAES-128 uses a 256-bit key (32 bytes) which occupies one Efuse key block.\nAES-256 uses a 512-bit key (64 bytes) which occupies two Efuse key blocks.\n\nThis setting is ignored if either type of key is already burned to Efuse before the first boot.\nIn this case, the pre-burned key is used and no new key is generated.",
                         "id": "security-features-enable-flash-encryption-on-boot-read-docs-first--size-of-generated-aes-xts-key",
                         "name": "SECURE_FLASH_ENCRYPTION_KEYSIZE",
@@ -1704,7 +1694,7 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is the default partition table, designed to fit into a 2MB or\nlarger flash with a single 1MB app partition.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp.csv\n\nThis partition table is not suitable for an app that needs OTA\n(over the air update) capability.",
                         "id": "PARTITION_TABLE_SINGLE_APP",
                         "name": "PARTITION_TABLE_SINGLE_APP",
                         "range": null,
@@ -1714,7 +1704,17 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is a variation of the default partition table, that expands\nthe 1MB app partition size to 1.5MB to fit more code.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp_large.csv\n\nThis partition table is not suitable for an app that needs OTA\n(over the air update) capability.",
+                        "id": "PARTITION_TABLE_SINGLE_APP_LARGE",
+                        "name": "PARTITION_TABLE_SINGLE_APP_LARGE",
+                        "range": null,
+                        "title": "Single factory app (large), no OTA",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "<choice PARTITION_TABLE_TYPE>",
+                        "help": "This is a basic OTA-enabled partition table with a factory app\npartition plus two OTA app partitions. All are 1MB, so this\npartition table requires 4MB or larger flash size.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_two_ota.csv",
                         "id": "PARTITION_TABLE_TWO_OTA",
                         "name": "PARTITION_TABLE_TWO_OTA",
                         "range": null,
@@ -1724,7 +1724,7 @@
                     {
                         "children": [],
                         "depends_on": "<choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "Specify the path to the partition table CSV to use for your project.\n\nConsult the Partition Table section in the ESP-IDF Programmers Guide\nfor more information.",
                         "id": "PARTITION_TABLE_CUSTOM",
                         "name": "PARTITION_TABLE_CUSTOM",
                         "range": null,
@@ -1734,7 +1734,7 @@
                     {
                         "children": [],
                         "depends_on": "!ESP32_COREDUMP_ENABLE_TO_FLASH && NVS_ENCRYPTION && <choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is a variation of the default \"Single factory app, no OTA\" partition table\nthat supports encrypted NVS when using flash encryption. See the Flash Encryption section\nin the ESP-IDF Programmers Guide for more information.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp_encr_nvs.csv",
                         "id": "PARTITION_TABLE_SINGLE_APP_ENCRYPTED_NVS",
                         "name": "PARTITION_TABLE_SINGLE_APP_ENCRYPTED_NVS",
                         "range": null,
@@ -1743,8 +1743,18 @@
                     },
                     {
                         "children": [],
+                        "depends_on": "!ESP32_COREDUMP_ENABLE_TO_FLASH && NVS_ENCRYPTION && <choice PARTITION_TABLE_TYPE>",
+                        "help": "This is a variation of the \"Single factory app (large), no OTA\" partition table\nthat supports encrypted NVS when using flash encryption. See the Flash Encryption section\nin the ESP-IDF Programmers Guide for more information.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_singleapp_large_encr_nvs.csv",
+                        "id": "PARTITION_TABLE_SINGLE_APP_LARGE_ENC_NVS",
+                        "name": "PARTITION_TABLE_SINGLE_APP_LARGE_ENC_NVS",
+                        "range": null,
+                        "title": "Single factory app (large), no OTA, encrypted NVS",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
                         "depends_on": "!ESP_COREDUMP_ENABLE_TO_FLASH && NVS_ENCRYPTION && <choice PARTITION_TABLE_TYPE>",
-                        "help": null,
+                        "help": "This is a variation of the \"Factory app, two OTA definitions\" partition table\nthat supports encrypted NVS when using flash encryption. See the Flash Encryption section\nin the ESP-IDF Programmers Guide for more information.\n\nThe corresponding CSV file in the IDF directory is\ncomponents/partition_table/partitions_two_ota_encr_nvs.csv",
                         "id": "PARTITION_TABLE_TWO_OTA_ENCRYPTED_NVS",
                         "name": "PARTITION_TABLE_TWO_OTA_ENCRYPTED_NVS",
                         "range": null,
@@ -1753,7 +1763,7 @@
                     }
                 ],
                 "depends_on": null,
-                "help": "The partition table to flash to the ESP32. The partition table\ndetermines where apps, data and other resources are expected to\nbe found.\n\nThe predefined partition table CSV descriptions can be found\nin the components/partition_table directory. Otherwise it's\npossible to create a new custom partition CSV for your application.",
+                "help": "The partition table to flash to the ESP32. The partition table\ndetermines where apps, data and other resources are expected to\nbe found.\n\nThe predefined partition table CSV descriptions can be found\nin the components/partition_table directory. These are mostly intended\nfor example and development use, it's expect that for production use you\nwill copy one of these CSV files and create a custom partition CSV for\nyour application.",
                 "id": "partition-table-partition-table",
                 "name": "PARTITION_TABLE_TYPE",
                 "title": "Partition Table",
@@ -1791,7 +1801,7 @@
             },
             {
                 "children": [],
-                "depends_on": null,
+                "depends_on": "!ESP32_COMPATIBLE_PRE_V3_1_BOOTLOADERS",
                 "help": "Generate an MD5 checksum for the partition table for protecting the\nintegrity of the table. The generation should be turned off for legacy\nbootloaders which cannot recognize the MD5 checksum in the partition\ntable.",
                 "id": "PARTITION_TABLE_MD5",
                 "name": "PARTITION_TABLE_MD5",
@@ -1900,6 +1910,16 @@
             {
                 "children": [],
                 "depends_on": null,
+                "help": null,
+                "id": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL",
+                "name": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL",
+                "range": null,
+                "title": null,
+                "type": "int"
+            },
+            {
+                "children": [],
+                "depends_on": null,
                 "help": "If enabled, the error messages will be discarded in following check macros:\n- ESP_RETURN_ON_ERROR\n- ESP_EXIT_ON_ERROR\n- ESP_RETURN_ON_FALSE\n- ESP_EXIT_ON_FALSE",
                 "id": "COMPILER_OPTIMIZATION_CHECKS_SILENT",
                 "name": "COMPILER_OPTIMIZATION_CHECKS_SILENT",
@@ -1994,7 +2014,7 @@
                     }
                 ],
                 "depends_on": null,
-                "help": "Stack smashing protection mode. Emit extra code to check for buffer overflows, such as stack\nsmashing attacks. This is done by adding a guard variable to functions with vulnerable objects.\nThe guards are initialized when a function is entered and then checked when the function exits.\nIf a guard check fails, program is halted. Protection has the following modes:\n\n- In NORMAL mode (GCC flag: -fstack-protector) only functions that call alloca, and functions with\n  buffers larger than 8 bytes are protected.\n\n- STRONG mode (GCC flag: -fstack-protector-strong) is like NORMAL, but includes additional functions\n  to be protected -- those that have local array definitions, or have references to local frame\n  addresses.\n\n- In OVERALL mode (GCC flag: -fstack-protector-all) all functions are protected.\n\nModes have the following impact on code performance and coverage:\n\n- performance: NORMAL > STRONG > OVERALL\n\n- coverage: NORMAL < STRONG < OVERALL",
+                "help": "Stack smashing protection mode. Emit extra code to check for buffer overflows, such as stack\nsmashing attacks. This is done by adding a guard variable to functions with vulnerable objects.\nThe guards are initialized when a function is entered and then checked when the function exits.\nIf a guard check fails, program is halted. Protection has the following modes:\n\n- In NORMAL mode (GCC flag: -fstack-protector) only functions that call alloca, and functions with\n  buffers larger than 8 bytes are protected.\n\n- STRONG mode (GCC flag: -fstack-protector-strong) is like NORMAL, but includes additional functions\n  to be protected -- those that have local array definitions, or have references to local frame\n  addresses.\n\n- In OVERALL mode (GCC flag: -fstack-protector-all) all functions are protected.\n\nModes have the following impact on code performance and coverage:\n\n- performance: NORMAL > STRONG > OVERALL\n\n- coverage: NORMAL < STRONG < OVERALL\n\nThe performance impact includes increasing the amount of stack memory required for each task.",
                 "id": "compiler-options-stack-smashing-protection-mode",
                 "name": "COMPILER_STACK_CHECK_MODE",
                 "title": "Stack smashing protection mode",
@@ -2072,9 +2092,20 @@
                         "type": "bool"
                     },
                     {
-                        "children": [],
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "EFUSE_VIRTUAL",
+                                "help": "In addition to the \"Simulate eFuse operations in RAM\" option, this option just adds\na feature to keep eFuses after reboots in flash memory. To use this mode the partition_table\nshould have the `efuse` partition. partition.csv: \"efuse_em, data, efuse,   ,   0x2000,\"\n\nDuring startup, the eFuses are copied from flash or,\nin case if flash is empty, from real eFuse to RAM and then update flash.\nThis mode is useful when need to keep changes after reboot\n(testing secure_boot and flash_encryption).",
+                                "id": "EFUSE_VIRTUAL_KEEP_IN_FLASH",
+                                "name": "EFUSE_VIRTUAL_KEEP_IN_FLASH",
+                                "range": null,
+                                "title": "Keep eFuses in flash",
+                                "type": "bool"
+                            }
+                        ],
                         "depends_on": null,
-                        "help": "All read and writes operations are redirected to RAM instead of eFuse registers.\nIf this option is set, all permanent changes (via eFuse) are disabled.\nLog output will state changes which would be applied, but they will not be.",
+                        "help": "If \"n\" - No virtual mode. All eFuse operations are real and use eFuse registers.\nIf \"y\" - The virtual mode is enabled and all eFuse operations (read and write) are redirected\nto RAM instead of eFuse registers, all permanent changes (via eFuse) are disabled.\nLog output will state changes that would be applied, but they will not be.\n\nDuring startup, the eFuses are copied into RAM. This mode is useful for fast tests.",
                         "id": "EFUSE_VIRTUAL",
                         "name": "EFUSE_VIRTUAL",
                         "range": null,
@@ -2468,7 +2499,7 @@
                         "name": "ESP32C3_RTC_CLK_CAL_CYCLES",
                         "range": [
                             0,
-                            125000
+                            32766
                         ],
                         "title": "Number of cycles for RTC_SLOW_CLK calibration",
                         "type": "int"
@@ -2595,7 +2626,7 @@
                                     }
                                 ],
                                 "depends_on": null,
-                                "help": "Configure the number of universally administered (by IEEE) MAC addresses.\nDuring initialization, MAC addresses for each network interface are generated or derived from a\nsingle base MAC address.\nIf the number of universal MAC addresses is four, all four interfaces (WiFi station, WiFi softap,\nBluetooth and Ethernet) receive a universally administered MAC address. These are generated\nsequentially by adding 0, 1, 2 and 3 (respectively) to the final octet of the base MAC address.\nIf the number of universal MAC addresses is two, only two interfaces (WiFi station and Bluetooth)\nreceive a universally administered MAC address. These are generated sequentially by adding 0\nand 1 (respectively) to the base MAC address. The remaining two interfaces (WiFi softap and Ethernet)\nreceive local MAC addresses. These are derived from the universal WiFi station and Bluetooth MAC\naddresses, respectively.\nWhen using the default (Espressif-assigned) base MAC address, either setting can be used. When using\na custom universal MAC address range, the correct setting will depend on the allocation of MAC\naddresses in this range (either 2 or 4 per device.)",
+                                "help": "Configure the number of universally administered (by IEEE) MAC addresses.\n\nDuring initialization, MAC addresses for each network interface are generated or derived from a\nsingle base MAC address.\n\nIf the number of universal MAC addresses is four, all four interfaces (WiFi station, WiFi softap,\nBluetooth and Ethernet) receive a universally administered MAC address. These are generated\nsequentially by adding 0, 1, 2 and 3 (respectively) to the final octet of the base MAC address.\n\nIf the number of universal MAC addresses is two, only two interfaces (WiFi station and Bluetooth)\nreceive a universally administered MAC address. These are generated sequentially by adding 0\nand 1 (respectively) to the base MAC address. The remaining two interfaces (WiFi softap and Ethernet)\nreceive local MAC addresses. These are derived from the universal WiFi station and Bluetooth MAC\naddresses, respectively.\n\nWhen using the default (Espressif-assigned) base MAC address, either setting can be used. When using\na custom universal MAC address range, the correct setting will depend on the allocation of MAC\naddresses in this range (either 2 or 4 per device.)\n\nNote that ESP32-C3 has no integrated Ethernet MAC. Although it's possible to use the esp_read_mac()\nAPI to return a MAC for Ethernet, this can only be used with an external MAC peripheral.",
                                 "id": "component-config-hardware-settings-mac-config-number-of-universally-administered-by-ieee-mac-address",
                                 "name": "ESP32C3_UNIVERSAL_MAC_ADDRESSES",
                                 "title": "Number of universally administered (by IEEE) MAC address",
@@ -2682,7 +2713,17 @@
                                 "id": "ESP_SYSTEM_PANIC_GDBSTUB",
                                 "name": "ESP_SYSTEM_PANIC_GDBSTUB",
                                 "range": null,
-                                "title": "Invoke GDBStub",
+                                "title": "GDBStub on panic",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
+                                "help": "Invoke gdbstub on the serial port, allowing for gdb to attach to it and to do a debug on runtime.\nThis feature will switch system to single core mode.",
+                                "id": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                                "name": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                                "range": null,
+                                "title": "GDBStub at runtime",
                                 "type": "bool"
                             }
                         ],
@@ -2886,6 +2927,16 @@
                             },
                             {
                                 "children": [],
+                                "depends_on": "(IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3) && <choice ESP_CONSOLE_UART>",
+                                "help": null,
+                                "id": "ESP_CONSOLE_USB_SERIAL_JTAG",
+                                "name": "ESP_CONSOLE_USB_SERIAL_JTAG",
+                                "range": null,
+                                "title": "USB Serial/JTAG Controller",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
                                 "depends_on": "<choice ESP_CONSOLE_UART>",
                                 "help": null,
                                 "id": "ESP_CONSOLE_UART_CUSTOM",
@@ -2906,7 +2957,7 @@
                             }
                         ],
                         "depends_on": null,
-                        "help": "Select where to send console output (through stdout and stderr).\n\n- Default is to use UART0 on pre-defined GPIOs.\n- If \"Custom\" is selected, UART0 or UART1 can be chosen,\n  and any pins can be selected.\n- If \"None\" is selected, there will be no console output on any UART, except\n  for initial output from ROM bootloader. This ROM output can be suppressed by\n  GPIO strapping or EFUSE, refer to chip datasheet for details.\n- On chips with USB peripheral, \"USB CDC\" option redirects output to the\n  CDC port. This option uses the CDC driver in the chip ROM.\n  This option is incompatible with TinyUSB stack.",
+                        "help": "Select where to send console output (through stdout and stderr).\n\n- Default is to use UART0 on pre-defined GPIOs.\n- If \"Custom\" is selected, UART0 or UART1 can be chosen,\n  and any pins can be selected.\n- If \"None\" is selected, there will be no console output on any UART, except\n  for initial output from ROM bootloader. This ROM output can be suppressed by\n  GPIO strapping or EFUSE, refer to chip datasheet for details.\n- On chips with USB OTG peripheral, \"USB CDC\" option redirects output to the\n  CDC port. This option uses the CDC driver in the chip ROM.\n  This option is incompatible with TinyUSB stack.\n- On chips with an USB serial/JTAG debug controller, selecting the option\n  for that redirects output to the CDC/ACM (serial port emulation) component\n  of that device.",
                         "id": "component-config-esp-system-settings-channel-for-console-output",
                         "name": "ESP_CONSOLE_UART",
                         "title": "Channel for console output",
@@ -3647,6 +3698,74 @@
                         "children": [
                             {
                                 "children": [],
+                                "depends_on": "<choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_EQUALS_SYSTEM",
+                                "name": "HAL_ASSERTION_EQUALS_SYSTEM",
+                                "range": null,
+                                "title": "Same as system assertion level",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL >= 0 && <choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_DISABLE",
+                                "name": "HAL_ASSERTION_DISABLE",
+                                "range": null,
+                                "title": "Disabled",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL >= 1 && <choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_SILIENT",
+                                "name": "HAL_ASSERTION_SILIENT",
+                                "range": null,
+                                "title": "Silent",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "COMPILER_OPTIMIZATION_ASSERTION_LEVEL >= 2 && <choice HAL_DEFAULT_ASSERTION_LEVEL>",
+                                "help": null,
+                                "id": "HAL_ASSERTION_ENABLE",
+                                "name": "HAL_ASSERTION_ENABLE",
+                                "range": null,
+                                "title": "Enabled",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Set the assert behavior / level for HAL component.\nHAL component assert level can be set separately,\nbut the level can't exceed the system assertion level.\ne.g. If the system assertion is disabled, then the HAL\nassertion can't be enabled either. If the system assertion\nis enable, then the HAL assertion can still be disabled\nby this Kconfig option.",
+                        "id": "component-config-hardware-abstraction-layer-hal-and-low-level-ll--default-hal-assertion-level",
+                        "name": "HAL_DEFAULT_ASSERTION_LEVEL",
+                        "title": "Default HAL assertion level",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "HAL_DEFAULT_ASSERTION_LEVEL",
+                        "name": "HAL_DEFAULT_ASSERTION_LEVEL",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-hardware-abstraction-layer-hal-and-low-level-ll-",
+                "title": "Hardware Abstraction Layer (HAL) and Low Level (LL)",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
                                 "depends_on": "<choice LOG_DEFAULT_LEVEL>",
                                 "help": null,
                                 "id": "LOG_DEFAULT_LEVEL_NONE",
@@ -3707,7 +3826,7 @@
                             }
                         ],
                         "depends_on": null,
-                        "help": "Specify how much output to see in logs by default.\nYou can set lower verbosity level at runtime using\nesp_log_level_set function.\n\nNote that this setting limits which log statements\nare compiled into the program. So setting this to, say,\n\"Warning\" would mean that changing log level to \"Debug\"\nat runtime will not be possible.",
+                        "help": "Specify how much output to see in logs by default.\nYou can set lower verbosity level at runtime using\nesp_log_level_set function.\n\nBy default, this setting limits which log statements\nare compiled into the program. For example, selecting\n\"Warning\" would mean that changing log level to \"Debug\"\nat runtime will not be possible. To allow increasing log\nlevel above the default at runtime, see the next option.",
                         "id": "component-config-log-output-default-log-verbosity",
                         "name": "LOG_DEFAULT_LEVEL",
                         "title": "Default log verbosity",
@@ -3719,6 +3838,86 @@
                         "help": null,
                         "id": "LOG_DEFAULT_LEVEL",
                         "name": "LOG_DEFAULT_LEVEL",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_EQUALS_DEFAULT",
+                                "name": "LOG_MAXIMUM_EQUALS_DEFAULT",
+                                "range": null,
+                                "title": "Same as default",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 1 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_ERROR",
+                                "name": "LOG_MAXIMUM_LEVEL_ERROR",
+                                "range": null,
+                                "title": "Error",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 2 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_WARN",
+                                "name": "LOG_MAXIMUM_LEVEL_WARN",
+                                "range": null,
+                                "title": "Warning",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 3 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_INFO",
+                                "name": "LOG_MAXIMUM_LEVEL_INFO",
+                                "range": null,
+                                "title": "Info",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 4 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_DEBUG",
+                                "name": "LOG_MAXIMUM_LEVEL_DEBUG",
+                                "range": null,
+                                "title": "Debug",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "LOG_DEFAULT_LEVEL < 5 && <choice LOG_MAXIMUM_LEVEL>",
+                                "help": null,
+                                "id": "LOG_MAXIMUM_LEVEL_VERBOSE",
+                                "name": "LOG_MAXIMUM_LEVEL_VERBOSE",
+                                "range": null,
+                                "title": "Verbose",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "This config option sets the highest log verbosity that it's possible to select\nat runtime by calling esp_log_level_set(). This level may be higher than\nthe default verbosity level which is set when the app starts up.\n\nThis can be used enable debugging output only at a critical point, for a particular\ntag, or to minimize startup time but then enable more logs once the firmware has\nloaded.\n\nNote that increasing the maximum available log level will increase the firmware\nbinary size.\n\nThis option only applies to logging from the app, the bootloader log level is\nfixed at compile time to the separate \"Bootloader log verbosity\" setting.",
+                        "id": "component-config-log-output-maximum-log-verbosity",
+                        "name": "LOG_MAXIMUM_LEVEL",
+                        "title": "Maximum log verbosity",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "LOG_MAXIMUM_LEVEL",
+                        "name": "LOG_MAXIMUM_LEVEL",
                         "range": null,
                         "title": null,
                         "type": "int"
@@ -4072,6 +4271,16 @@
                         "name": "SPI_FLASH_CHECK_ERASE_TIMEOUT_DISABLED",
                         "range": null,
                         "title": "Flash timeout checkout disabled",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "!SPI_FLASH_USE_LEGACY_IMPL",
+                        "help": "This option allows the chip driver list to be customized, instead of using the default list provided by\nESP-IDF.\n\nWhen this option is enabled, the default list is no longer compiled or linked. Instead, the\n`default_registered_chips` structure must be provided by the user.\n\nSee example: custom_chip_driver under examples/storage for more details.",
+                        "id": "SPI_FLASH_OVERRIDE_CHIP_DRIVER_LIST",
+                        "name": "SPI_FLASH_OVERRIDE_CHIP_DRIVER_LIST",
+                        "range": null,
+                        "title": "Override default chip driver list",
                         "type": "bool"
                     },
                     {

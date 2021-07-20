@@ -1,4 +1,4 @@
-# Install script for directory: /home/saehi/Desktop/ESP/esp32-C3/esp-idf/components/esp_adc_cal
+# Install script for directory: /home/seahi/Desktop/ESP/ESP32/esp-idf/components/esp_adc_cal
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

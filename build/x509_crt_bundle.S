@@ -1,4 +1,4 @@
-/* * Data converted from /home/saehi/Desktop/ESP/esp32-C3/WS2812_Device/ESP32-C3ControuWs2812/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from /home/seahi/Desktop/ESP/project/esp32/ESP32Controu2812_Demo/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

@@ -1,9 +1,9 @@
-set(CMAKE_HOST_SYSTEM "Linux-5.8.0-53-generic")
+set(CMAKE_HOST_SYSTEM "Linux-5.8.0-59-generic")
 set(CMAKE_HOST_SYSTEM_NAME "Linux")
-set(CMAKE_HOST_SYSTEM_VERSION "5.8.0-53-generic")
+set(CMAKE_HOST_SYSTEM_VERSION "5.8.0-59-generic")
 set(CMAKE_HOST_SYSTEM_PROCESSOR "x86_64")
 
-include("/home/saehi/Desktop/ESP/esp32-C3/esp-idf/tools/cmake/toolchain-esp32c3.cmake")
+include("/home/seahi/Desktop/ESP/ESP32/esp-idf/tools/cmake/toolchain-esp32c3.cmake")
 
 set(CMAKE_SYSTEM "Generic")
 set(CMAKE_SYSTEM_NAME "Generic")

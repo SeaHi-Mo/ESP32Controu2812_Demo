@@ -1,4 +1,4 @@
-# Install script for directory: /home/saehi/Desktop/ESP/esp32-C3/esp-idf/components/soc
+# Install script for directory: /home/seahi/Desktop/ESP/ESP32/esp-idf/components/soc
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,7 +34,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/saehi/Desktop/ESP/esp32-C3/WS2812_Device/ESP32-C3ControuWs2812/build/bootloader/esp-idf/soc/esp32c3/cmake_install.cmake")
+  include("/home/seahi/Desktop/ESP/project/esp32/ESP32Controu2812_Demo/build/bootloader/esp-idf/soc/esp32c3/cmake_install.cmake")
 
 endif()
 

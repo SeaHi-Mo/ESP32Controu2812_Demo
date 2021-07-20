@@ -1,4 +1,4 @@
-# Install script for directory: /home/saehi/Desktop/ESP/esp32-C3/WS2812_Device/ESP32-C3ControuWs2812/components/led_strip
+# Install script for directory: /home/seahi/Desktop/ESP/project/esp32/ESP32Controu2812_Demo/components/led_strip
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

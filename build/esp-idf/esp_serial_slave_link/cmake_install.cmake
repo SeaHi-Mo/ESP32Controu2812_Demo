@@ -1,4 +1,4 @@
-# Install script for directory: /home/saehi/Desktop/ESP/esp32-C3/esp-idf/components/esp_serial_slave_link
+# Install script for directory: /home/seahi/Desktop/ESP/ESP32/esp-idf/components/esp_serial_slave_link
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
